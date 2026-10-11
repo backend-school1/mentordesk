@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MentorDesk.Api/MentorDesk.Api.csproj" />
+    <Project Path="src/MentorDesk.Application/MentorDesk.Application.csproj" />
+    <Project Path="src/MentorDesk.Domain/MentorDesk.Domain.csproj" />
+    <Project Path="src/MentorDesk.Infrastructure/MentorDesk.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MentorDesk.Tests/MentorDesk.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,19 @@
+# Локальная разработка: только PostgreSQL. Само приложение запускается через `dotnet run`.
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: mentordesk
+      POSTGRES_USER: mentordesk
+      POSTGRES_PASSWORD: mentordesk
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mentordesk"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  pgdata:
