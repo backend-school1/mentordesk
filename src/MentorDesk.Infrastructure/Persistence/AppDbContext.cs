@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using MentorDesk.Domain.Entities;
 
 namespace MentorDesk.Infrastructure.Persistence;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     // DbSet-ы сущностей появятся здесь (задача #1 — Deck и Card).
+    public DbSet<Student> Students => Set<Student>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

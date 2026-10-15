@@ -20,7 +20,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .IsRequired()
             .HasMaxLength(32);
 
-        builder.hasIndex(s => s.TelegramUserName)
+        builder.HasIndex(s => s.TelegramUserName)
             .IsUnique();
 
         builder.Property(s => s.TelegramId)
