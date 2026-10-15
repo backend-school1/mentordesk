@@ -16,8 +16,8 @@ namespace MentorDesk.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
-                    Description = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -31,8 +31,8 @@ namespace MentorDesk.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     DeckId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Question = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Answer = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
+                    Question = table.Column<string>(type: "text", nullable: false),
+                    Answer = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
