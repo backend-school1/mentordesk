@@ -10,15 +10,12 @@ public class DeckConfiguration : IEntityTypeConfiguration<Deck>
     {
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id)
-            .IsRequired(); // Явно написал, мб избыточно
+        builder.Property(x => x.Id);
 
         builder.Property(x => x.Title)
-            .IsRequired()
-            .HasMaxLength(40);
+            .IsRequired();
 
-        builder.Property(x => x.Description)
-            .HasMaxLength(50);
+        builder.Property(x => x.Description);
 
         builder.Property(x => x.CreatedAt)
             .IsRequired();

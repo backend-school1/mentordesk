@@ -18,12 +18,10 @@ public class CardConfiguration : IEntityTypeConfiguration<Card>
             .HasForeignKey(c => c.DeckId);
 
         builder.Property(x => x.Question)
-            .IsRequired()
-            .HasMaxLength(100);
+            .IsRequired();
 
         builder.Property(x => x.Answer)
-            .IsRequired()
-            .HasMaxLength(400);
+            .IsRequired();
 
         builder.Property(x => x.CreatedAt)
             .IsRequired();
