@@ -13,9 +13,9 @@ public class Student
 {
     public Guid Id { get; set; } = Guid.NewGuid ();
 
-    public string TelegrammUserName { get; set; } = string.Empty;
+    public string TelegramUserName { get; set; } = string.Empty;
 
-    public long? TelegrammId { get; set; } = null;
+    public long? TelegramId { get; set; } = null;
 
     public  StudentStatus Status { get; set; } = StudentStatus.Active;
 
