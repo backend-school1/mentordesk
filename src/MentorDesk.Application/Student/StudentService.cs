@@ -21,14 +21,15 @@ public class StudentService(IStudentRepository repository)
         if (exists)
             return null;
 
-        var student = new Student
+        var student = new Student()
         {
-            TelegramUsername = username
+            TelegramUserName = username
         };
 
         await repository.AddAsync(student, ct);
         await repository.SaveChangesAsync(ct);
 
         return student;
+        
     }
 }
