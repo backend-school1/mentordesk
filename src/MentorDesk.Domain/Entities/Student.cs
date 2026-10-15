@@ -5,7 +5,7 @@ using MentorDesk.Domain.Enums;
 namespace MentorDesk.Domain.Entities;
 
 /// <summary>
-/// Summary description for Class1
+/// Entity representing a student in the MentorDesk system.
 /// </summary>
 /// 
 
