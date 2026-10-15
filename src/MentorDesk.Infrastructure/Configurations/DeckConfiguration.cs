@@ -9,7 +9,7 @@ public class DeckConfiguration : IEntityTypeConfiguration<Deck>
     public void Configure(EntityTypeBuilder<Deck> builder)
     {
         builder.HasKey(x => x.Id);
-        
+
         builder.Property(x => x.Id)
             .IsRequired(); // Явно написал, мб избыточно
 
