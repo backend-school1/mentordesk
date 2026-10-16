@@ -7,14 +7,9 @@ namespace MentorDesk.Application.Students;
 /// </summary>
 public interface IStudentRepository
 {
-    Task<bool> ExistsByUsernameAsync(
-        string username,
-        CancellationToken ct = default);
+    Task<bool> ExistsByUsernameAsync(string username, CancellationToken ct = default);
 
-    Task AddAsync(
-        Student student,
-        CancellationToken ct = default);
+    Task AddAsync(Student student, CancellationToken ct = default);
 
-    Task SaveChangesAsync(
-        CancellationToken ct = default);
+    Task SaveChangesAsync(CancellationToken ct = default);
 }

@@ -11,7 +11,6 @@ public class StudentService(IStudentRepository repository)
         string rawUsername,
         CancellationToken ct = default)
     {
-
         var username =
             TelegramUsernameNormalizer.Normalize(rawUsername);
 
@@ -30,6 +29,5 @@ public class StudentService(IStudentRepository repository)
         await repository.SaveChangesAsync(ct);
 
         return student;
-        
     }
 }
