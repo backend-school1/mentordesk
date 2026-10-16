@@ -12,4 +12,9 @@ public interface IStudentRepository
     Task AddAsync(Student student, CancellationToken ct = default);
 
     Task SaveChangesAsync(CancellationToken ct = default);
+    
+    Task<List<Student>> GetAllAsync(CancellationToken ct = default);
+
+    Task<Student?> GetByIdAsync(Guid id, CancellationToken ct = default);
+    
 }

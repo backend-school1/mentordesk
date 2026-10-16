@@ -25,4 +25,14 @@ public sealed class StudentRepository(AppDbContext db) : IStudentRepository
     {
         await db.SaveChangesAsync(ct);
     }
+
+    public async Task<List<Student>> GetAllAsync(CancellationToken ct = default)
+    {
+        return await db.Students.AsNoTracking().ToListAsync(ct);
+    }
+
+    public async Task<Student?> GetByIdAsync(Guid id, CancellationToken ct = default)
+    {
+        return await db.Students.FirstOrDefaultAsync(s => s.Id == id, ct);
+    }
 }
