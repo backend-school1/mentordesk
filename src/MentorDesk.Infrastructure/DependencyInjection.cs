@@ -14,7 +14,7 @@ public static class DependencyInjection
 
         services.AddScoped<IDeckRepository, DeckRepository>();
         services.AddScoped<ICardRepository, CardRepository>();
-        
+
         return services;
     }
 }

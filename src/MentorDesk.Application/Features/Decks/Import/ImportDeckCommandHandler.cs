@@ -16,11 +16,11 @@ public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, Impor
         _deckRepository = deckRepository;
         _cardRepository = cardRepository;
     }
-    
+
     public async Task<ImportResult> Handle(ImportDeckCommand request, CancellationToken cancellationToken)
     {
         var deck = await _deckRepository.GetDeckAsync(request.DeckId, cancellationToken);
-        
+
         if (deck is null)
         {
             // Изменить в дальнейшем на 404 при наличии exception middleware
@@ -37,7 +37,7 @@ public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, Impor
 
         var created = 0;
         var updated = 0;
-        
+
         var newCards = new List<Card>();
 
         foreach (CardCsvRow record in records)
@@ -55,7 +55,7 @@ public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, Impor
                     Question = record.Question,
                     Answer = record.Answer
                 };
-                
+
                 newCards.Add(newCard);
                 created++;
             }

@@ -12,7 +12,7 @@ public class CardRepository : ICardRepository
     {
         _context = context;
     }
-    
+
     public async Task<IReadOnlyList<Card>> GetCardsByDeckAsync(Guid deckId, CancellationToken cancellationToken)
     {
         return await _context.Cards.Where(x => x.DeckId == deckId).ToListAsync(cancellationToken);

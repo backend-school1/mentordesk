@@ -12,7 +12,7 @@ public class DeckRepository : IDeckRepository
     {
         _context = context;
     }
-    
+
     public async Task<Deck?> GetDeckAsync(Guid deckId, CancellationToken cancellationToken)
     {
         return await _context.Decks.FirstOrDefaultAsync(x => x.Id == deckId, cancellationToken);
