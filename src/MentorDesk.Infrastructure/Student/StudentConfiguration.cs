@@ -36,5 +36,5 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
 
 
 
-    }   
+    }
 }

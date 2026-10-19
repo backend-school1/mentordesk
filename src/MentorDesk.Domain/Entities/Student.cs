@@ -11,13 +11,13 @@ namespace MentorDesk.Domain.Entities;
 
 public class Student
 {
-    public Guid Id { get; set; } = Guid.NewGuid ();
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     public string TelegramUserName { get; set; } = string.Empty;
 
     public long? TelegramId { get; set; } = null;
 
-    public  StudentStatus Status { get; set; } = StudentStatus.Active;
+    public StudentStatus Status { get; set; } = StudentStatus.Active;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

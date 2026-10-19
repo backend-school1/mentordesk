@@ -32,7 +32,7 @@ public class StudentService(IStudentRepository repository)
         return student;
     }
 
-    public async Task<List<Student>> GetAllAsync(CancellationToken ct=default)
+    public async Task<List<Student>> GetAllAsync(CancellationToken ct = default)
     {
         return await repository.GetAllAsync(ct);
     }

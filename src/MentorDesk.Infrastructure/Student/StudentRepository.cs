@@ -1,8 +1,8 @@
+using System;
 using MentorDesk.Application.Students;
 using MentorDesk.Domain.Entities;
 using MentorDesk.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace MentorDesk.Infrastructure;
 
@@ -18,7 +18,7 @@ public sealed class StudentRepository(AppDbContext db) : IStudentRepository
 
     public async Task AddAsync(Student student, CancellationToken ct = default)
     {
-         await db.Students.AddAsync(student, ct);
+        await db.Students.AddAsync(student, ct);
     }
 
     public async Task SaveChangesAsync(CancellationToken ct = default)

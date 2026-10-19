@@ -11,7 +11,7 @@ namespace MentorDesk.Api.Students;
 [ApiController]
 [Route("students")]
 
-public sealed class StudentController (StudentService studentService) : ControllerBase
+public sealed class StudentController(StudentService studentService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct = default)
@@ -27,16 +27,16 @@ public sealed class StudentController (StudentService studentService) : Controll
         {
 
             var student = await studentService.CreateAsync(request.telegramUserName, ct);
-                
-                if(student is null)
-                    return Conflict("Student already exists");
-                
-                return StatusCode(StatusCodes.Status201Created, ToResponse(student));
+
+            if (student is null)
+                return Conflict("Student already exists");
+
+            return StatusCode(StatusCodes.Status201Created, ToResponse(student));
         }
 
         catch (ArgumentException e)
         {
-            return BadRequest(e.Message); 
+            return BadRequest(e.Message);
         }
     }
 
@@ -46,12 +46,12 @@ public sealed class StudentController (StudentService studentService) : Controll
     {
         if (!Enum.TryParse<StudentStatus>(request.status, true, out var status) || !Enum.IsDefined(typeof(StudentStatus), status))
             return BadRequest("Invalid status");
-        
+
         var student = await studentService.ChangeStatusAsync(id, status, ct);
-        
-        if  (student is null) 
+
+        if (student is null)
             return NotFound("Student not found");
-        
+
         return Ok(ToResponse(student));
     }
 

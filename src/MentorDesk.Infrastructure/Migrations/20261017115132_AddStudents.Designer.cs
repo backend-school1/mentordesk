@@ -49,7 +49,7 @@ namespace MentorDesk.Infrastructure.Migrations
 
                     b.HasIndex("DeckId");
 
-                    b.ToTable("Card");
+                    b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("MentorDesk.Domain.Entities.Deck", b =>
@@ -70,7 +70,7 @@ namespace MentorDesk.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Deck");
+                    b.ToTable("Decks");
                 });
 
             modelBuilder.Entity("MentorDesk.Domain.Entities.Student", b =>

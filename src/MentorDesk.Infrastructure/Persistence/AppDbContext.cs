@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using MentorDesk.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MentorDesk.Infrastructure.Persistence;
 
