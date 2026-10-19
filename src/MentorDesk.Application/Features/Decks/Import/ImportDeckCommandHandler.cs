@@ -27,7 +27,7 @@ public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, Impor
             throw new InvalidOperationException($"Колода не найдена");
         }
 
-        using var reader = new StreamReader(request.Csv);
+        using var reader = new StreamReader(request.Csv, leaveOpen: true);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
         var records = csv.GetRecords<CardCsvRow>().ToList();
