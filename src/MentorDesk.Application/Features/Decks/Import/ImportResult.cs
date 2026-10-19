@@ -1,3 +1,3 @@
 namespace MentorDesk.Application.Features.Decks.Import;
 
-public record ImportResult(int Created, int Updated);
+public record ImportResult(int Created);

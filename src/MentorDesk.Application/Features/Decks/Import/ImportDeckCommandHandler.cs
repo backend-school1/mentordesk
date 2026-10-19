@@ -36,20 +36,13 @@ public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, Impor
         var existingCardsDict = existingCards.ToDictionary(x => x.Question);
 
         var created = 0;
-        var updated = 0;
-
         var newCards = new List<Card>();
 
         foreach (CardCsvRow record in records)
         {
-            if (existingCardsDict.TryGetValue(record.Question, out var existingCard))
+            if (!existingCardsDict.ContainsKey(record.Question))
             {
-                existingCard.Answer = record.Answer;
-                updated++;
-            }
-            else
-            {
-                var newCard = new Card()
+                var newCard = new Card
                 {
                     DeckId = request.DeckId,
                     Question = record.Question,
@@ -68,6 +61,6 @@ public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, Impor
 
         await _cardRepository.SaveChangesAsync(cancellationToken);
 
-        return new ImportResult(created, updated);
+        return new ImportResult(created);
     }
 }

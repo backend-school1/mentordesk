@@ -20,7 +20,7 @@ public class DecksController : ControllerBase
     public async Task<ActionResult<ImportResult>> ImportDeck(Guid deckId, [FromForm] IFormFile file, CancellationToken cancellationToken)
     {
         using var stream = file.OpenReadStream();
-        
+
         var result = await _mediator.Send(new ImportDeckCommand(deckId, stream), cancellationToken);
 
         return Ok(result);
