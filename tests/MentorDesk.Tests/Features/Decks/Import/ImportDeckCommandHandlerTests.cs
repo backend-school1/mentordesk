@@ -48,7 +48,6 @@ public class ImportDeckCommandHandlerTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         result.Created.Should().Be(2);
-        result.Updated.Should().Be(0);
 
         _cardRepositoryMock.Verify(
             r => r.AddCards(It.Is<IEnumerable<Card>>(cards => cards.Count() == 2), It.IsAny<CancellationToken>()),
@@ -58,10 +57,14 @@ public class ImportDeckCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenDeckExistsAndCardAlreadyExists_ShouldUpdateCardAndReturnCorrectResult()
+    public async Task Handle_WhenCardAlreadyExists_ShouldSkipDuplicateAndNotCreateIt()
     {
         var deckId = Guid.NewGuid();
-        var deck = new Deck { Id = deckId, Title = "Test Deck" };
+        var deck = new Deck
+        {
+            Id = deckId,
+            Title = "Test Deck"
+        };
 
         var existingCard = new Card
         {
@@ -71,30 +74,21 @@ public class ImportDeckCommandHandlerTests
             Answer = "Old Answer"
         };
 
-        _deckRepositoryMock
-            .Setup(r => r.GetDeckAsync(deckId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(deck);
+        _deckRepositoryMock.Setup(r => r.GetDeckAsync(deckId, It.IsAny<CancellationToken>())).ReturnsAsync(deck);
+        _cardRepositoryMock.Setup(r => r.GetCardsByDeckAsync(deckId, It.IsAny<CancellationToken>())).ReturnsAsync(new List<Card> { existingCard });
 
-        _cardRepositoryMock
-            .Setup(r => r.GetCardsByDeckAsync(deckId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Card> { existingCard });
-
-        var csvContent = "Question,Answer\r\nQ1,New Answer";
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(csvContent));
-
+        var csv = "Question,Answer\r\nQ1,New Answer\r\nQ2,A2";
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(csv));
         var command = new ImportDeckCommand(deckId, stream);
 
         var result = await _handler.Handle(command, CancellationToken.None);
 
-        result.Created.Should().Be(0);
-        result.Updated.Should().Be(1);
-
-        existingCard.Answer.Should().Be("New Answer");
+        result.Created.Should().Be(1);
 
         _cardRepositoryMock.Verify(
-            r => r.AddCards(It.IsAny<IEnumerable<Card>>(), It.IsAny<CancellationToken>()),
-            Times.Never());
+            r => r.AddCards(It.Is<IEnumerable<Card>>(cards => cards.Count() == 1), It.IsAny<CancellationToken>()),
+            Times.Once);
 
-        _cardRepositoryMock.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        existingCard.Answer.Should().Be("Old Answer");
     }
 }
