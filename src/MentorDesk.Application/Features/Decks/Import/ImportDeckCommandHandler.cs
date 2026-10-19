@@ -2,6 +2,7 @@ using System.Globalization;
 using CsvHelper;
 using MediatR;
 using MentorDesk.Application.Abstractions.Repositories;
+using MentorDesk.Application.Exceptions;
 using MentorDesk.Domain.Entities;
 
 namespace MentorDesk.Application.Features.Decks.Import;
@@ -24,7 +25,7 @@ public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, Impor
         if (deck is null)
         {
             // Изменить в дальнейшем на 404 при наличии exception middleware
-            throw new InvalidOperationException($"Колода не найдена");
+            throw new NotFoundException($"Колода с id {request.DeckId} не найдена");
         }
 
         using var reader = new StreamReader(request.Csv, leaveOpen: true);
