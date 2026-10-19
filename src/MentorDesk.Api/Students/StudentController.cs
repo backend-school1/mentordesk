@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MentorDesk.Api.Students;
 
 [ApiController]
-[Route("[students]/{request}")]
+[Route("students")]
 
 public sealed class StudentController (StudentService studentService) : ControllerBase
 {
@@ -40,7 +40,7 @@ public sealed class StudentController (StudentService studentService) : Controll
         }
     }
 
-    
+    [HttpPatch("{id:guid}/status")]
     public async Task<IActionResult> ChangeStudentStatus(Guid id, StudentsDTO.ChangeStudentStatusRequest request,
         CancellationToken ct = default)
     {
