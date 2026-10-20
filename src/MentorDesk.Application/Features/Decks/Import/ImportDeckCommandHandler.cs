@@ -24,7 +24,6 @@ public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, Impor
 
         if (deck is null)
         {
-            // Изменить в дальнейшем на 404 при наличии exception middleware
             throw new NotFoundException($"Колода с id {request.DeckId} не найдена");
         }
 

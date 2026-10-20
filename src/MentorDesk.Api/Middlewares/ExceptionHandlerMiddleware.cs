@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using FluentValidation;
 using MentorDesk.Application.Exceptions;
 
 namespace MentorDesk.Api.Middlewares;
@@ -33,6 +34,7 @@ public class ExceptionHandlerMiddleware
         var statusCode = exception switch
         {
             NotFoundException => HttpStatusCode.NotFound,
+            ValidationException => HttpStatusCode.BadRequest,
             _ => HttpStatusCode.InternalServerError
         };
 
