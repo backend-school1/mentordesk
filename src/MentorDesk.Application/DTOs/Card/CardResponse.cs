@@ -1,4 +1,4 @@
-﻿namespace MentorDesk.Api.DTOs.Card;
+﻿namespace MentorDesk.Application.DTOs.Card;
 
 public record CardResponse
 {

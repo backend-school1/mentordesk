@@ -1,6 +1,6 @@
-﻿namespace MentorDesk.Api.DTOs.Card;
+﻿namespace MentorDesk.Application.DTOs.Card;
 
-public record CreateCardRequest
+public record UpdateCardRequest
 {
     public string Question { get; set; } = string.Empty;
     public string Answer { get; set; } = string.Empty;

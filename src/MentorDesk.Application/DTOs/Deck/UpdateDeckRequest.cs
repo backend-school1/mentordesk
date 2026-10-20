@@ -1,4 +1,4 @@
-﻿namespace MentorDesk.Api.DTOs.Deck;
+﻿namespace MentorDesk.Application.DTOs.Deck;
 
 public record UpdateDeckRequest
 {

@@ -1,6 +1,7 @@
 using MediatR;
 using MentorDesk.Application.Features.Decks.Import;
 using Microsoft.AspNetCore.Mvc;
+using MentorDesk.Application.Service;
 
 namespace MentorDesk.Api.Controllers;
 
@@ -9,10 +10,12 @@ namespace MentorDesk.Api.Controllers;
 public class DecksController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IDeckService _deckService;
 
-    public DecksController(IMediator mediator)
+    public DecksController(IMediator mediator, IDeckService deckService)
     {
         _mediator = mediator;
+        _deckService = deckService;
     }
 
     [HttpPost]
@@ -25,4 +28,41 @@ public class DecksController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpGet] // GetAllDecksAsync
+    public async Task<IActionResult> GetDecksAsync()
+    {
+        var decks = await _deckService.GetAllDecksAsync();
+
+        return Ok(decks);
+    }
+
+    [HttpPost] // CreateDeckAsync
+
+
+    [HttpGet("{id}")] // GetByDeckIdAsync
+    public async Task<IActionResult> GetDeck([FromBody] Guid id)
+    {
+        var deck = await _deckService.GetByIdAsync(id);
+
+        if (deck is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(deck);
+    }
+
+
+    [HttpPut("{id}")]
+    // UpdateDeckAsync
+
+    [HttpDelete("{id}")]
+    // DeleteDeckAsync
+
+    [HttpGet("{id}/cards")]
+    // GetCardsAsync
+
+    [HttpPost("{id}/cards")]
+    // CreateCardAsync
 }
