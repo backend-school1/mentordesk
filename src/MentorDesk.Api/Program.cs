@@ -1,4 +1,5 @@
 using MentorDesk.Api.Bot;
+using MentorDesk.Api.Middlewares;
 using MentorDesk.Application;
 using MentorDesk.Infrastructure;
 using MentorDesk.Infrastructure.Persistence;
@@ -47,6 +48,7 @@ if (app.Environment.IsDevelopment())
 app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => false });
 app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
 
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.MapControllers();
 
 app.Run();
