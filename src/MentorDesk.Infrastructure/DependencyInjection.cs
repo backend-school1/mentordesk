@@ -1,5 +1,7 @@
 using MentorDesk.Application.Students;
+using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Infrastructure.Persistence;
+using MentorDesk.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +15,10 @@ public static class DependencyInjection
 
         services.AddScoped<IStudentRepository, StudentRepository>();
         services.AddScoped<StudentService>();
+
+
+        services.AddScoped<IDeckRepository, DeckRepository>();
+        services.AddScoped<ICardRepository, CardRepository>();
 
         return services;
     }
