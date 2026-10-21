@@ -61,27 +61,21 @@ public class DeckService : IDeckService
 
     public async Task<bool> DeleteDeckAsync(Guid id, CancellationToken cancellationToken)
     {
-        var deck = await _deckRepository.GetDeckAsync(
-        id,
-        cancellationToken);
+        var deck = await _deckRepository.GetDeckAsync(id, cancellationToken);
 
         if (deck is null)
         {
             return false;
         }
 
-        await _deckRepository.DeleteDeckAsync(
-            deck,
-            cancellationToken);
+        await _deckRepository.DeleteDeckAsync(deck, cancellationToken);
 
         return true;
     }
 
     public async Task<DeckResponse?> UpdateDeckAsync(Guid id, UpdateDeckRequest request, CancellationToken cancellationToken)
     {
-        var deck = await _deckRepository.GetDeckAsync(
-        id,
-        cancellationToken);
+        var deck = await _deckRepository.GetDeckAsync(id, cancellationToken);
 
         if (deck is null)
         {

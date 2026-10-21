@@ -1,6 +1,6 @@
 ﻿using MentorDesk.Application.DTOs.Card;
 
-namespace MentorDesk.Applcation.Service;
+namespace MentorDesk.Application.Service;
 
 public interface ICardService
 {

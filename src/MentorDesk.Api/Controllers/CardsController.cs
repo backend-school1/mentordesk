@@ -1,4 +1,8 @@
-﻿namespace MentorDesk.Api.Controllers;
+﻿using Microsoft.AspNetCore.Mvc;
+using MentorDesk.Application.DTOs.Card;
+using MentorDesk.Application.Service;
+
+namespace MentorDesk.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -12,7 +16,29 @@ public class CardsController : ControllerBase
         _cardService = cardService;
 	}
 
-    [HttpPut("{id}")] // UpdateCardAsync
+    [HttpPut("{id}")]
+    public async Task<ActionResult<CardResponse>> UpdateCardAsync([FromRoute] Guid id, [FromBody] UpdateCardRequest request, CancellationToken cancellationToken)
+    {
+        var card = await _cardService.UpdateCardAsync(id, request, cancellationToken);
 
-    [HttpDelete("{id}")] // DeleteCardAsync
+        if (card is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(card);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCardAsync([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var deleted = await _cardService.DeleteCardAsync(id, cancellationToken);
+
+        if (!deleted)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
 }

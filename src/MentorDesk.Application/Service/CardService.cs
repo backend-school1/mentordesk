@@ -1,7 +1,7 @@
 ﻿using MentorDesk.Application.DTOs.Card;
 using MentorDesk.Application.Abstractions.Repositories;
 
-namespace MentorDesk.Applcation.Service;
+namespace MentorDesk.Application.Service;
 
 public class CardService : ICardService
 {
@@ -93,9 +93,7 @@ public class CardService : ICardService
 
     public async Task<List<CardResponse>> GetCardsAsync(Guid deckId, CancellationToken cancellationToken)
     {
-        var cards = await _cardRepository.GetCardsByDeckAsync(
-        deckId,
-        cancellationToken);
+        var cards = await _cardRepository.GetCardsByDeckAsync(deckId, cancellationToken);
 
         return cards.Select(card => new CardResponse
         {
