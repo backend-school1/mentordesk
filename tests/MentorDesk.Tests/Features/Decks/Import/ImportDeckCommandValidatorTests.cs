@@ -14,7 +14,7 @@ public class ImportDeckCommandValidatorTests
     {
         _validator = new ImportDeckCommandValidator();
     }
-    
+
     [Fact]
     public async Task Validate_WhenDeckIdIsEmpty_ShouldReturnValidationError()
     {
