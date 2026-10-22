@@ -105,28 +105,19 @@ public class DecksController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("{id}/cards")]
+    [HttpGet("{deckId:guid}/cards")]
     public async Task<ActionResult<List<CardResponse>>> GetCardsAsync([FromRoute] Guid deckId, CancellationToken cancellationToken)
     {
         var cards = await _cardService.GetCardsAsync(deckId, cancellationToken);
 
-        var response = cards
-            .Select(card => new CardResponse
-            {
-                Id = card.Id,
-                Question = card.Question,
-                Answer = card.Answer
-            })
-            .ToList();
-
-        return Ok(response);
+        return Ok(cards);
     }
 
-    [HttpPost("{id}/cards")]
-    public async Task<ActionResult<CardResponse>> CreateCardAsync([FromRoute] Guid id, [FromBody] CreateCardRequest request, CancellationToken cancellationToken)
+    [HttpPost("{deckId:guid}/cards")]
+    public async Task<ActionResult<CardResponse>> CreateCardAsync([FromRoute] Guid deckId, [FromBody] CreateCardRequest request, CancellationToken cancellationToken)
     {
-        var card = await _cardService.CreateCardAsync(id, request, cancellationToken);
+        var card = await _cardService.CreateCardAsync(deckId, request, cancellationToken);
 
-        return CreatedAtAction(nameof(GetCardsAsync), new { id }, card);
+        return StatusCode(StatusCodes.Status201Created, card);
     }
 }
