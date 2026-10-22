@@ -28,7 +28,7 @@ public class CardRepository : ICardRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<Card?> GetCardAsync(Guid id,CancellationToken cancellationToken)
+    public async Task<Card?> GetCardAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _context.Cards.FirstOrDefaultAsync(card => card.Id == id, cancellationToken);
     }

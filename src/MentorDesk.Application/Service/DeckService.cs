@@ -13,7 +13,7 @@ public class DeckService : IDeckService
         _deckRepository = deckRepository;
     }
 
-    public async Task<List<DeckResponse>> GetAllDecksAsync(CancellationToken cancellationToken) 
+    public async Task<List<DeckResponse>> GetAllDecksAsync(CancellationToken cancellationToken)
     {
         var deck = await _deckRepository.GetAllDecksAsync(cancellationToken);
 
@@ -25,8 +25,8 @@ public class DeckService : IDeckService
             })
             .ToList();
     }
-
-	public async Task<DeckResponse> CreateDeckAsync(CreateDeckRequest request, CancellationToken cancellationToken)
+    
+    public async Task<DeckResponse> CreateDeckAsync(CreateDeckRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.Title))
         {
@@ -44,7 +44,7 @@ public class DeckService : IDeckService
         };
     }
 
-    public async Task<DeckResponse?> GetByDeckIdAsync(Guid id, CancellationToken cancellationToken) 
+    public async Task<DeckResponse?> GetByDeckIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var deck = await _deckRepository.GetDeckAsync(id, cancellationToken);
         if (deck is null)

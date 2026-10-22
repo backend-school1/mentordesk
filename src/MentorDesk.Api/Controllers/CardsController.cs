@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MentorDesk.Application.DTOs.Card;
+﻿using MentorDesk.Application.DTOs.Card;
 using MentorDesk.Application.Service;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MentorDesk.Api.Controllers;
 
@@ -12,9 +12,9 @@ public class CardsController : ControllerBase
     private readonly ICardService _cardService;
 
     public CardsController(ICardService cardService)
-	{
+    {
         _cardService = cardService;
-	}
+    }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<CardResponse>> UpdateCardAsync([FromRoute] Guid id, [FromBody] UpdateCardRequest request, CancellationToken cancellationToken)

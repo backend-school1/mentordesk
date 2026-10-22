@@ -1,5 +1,5 @@
-﻿using MentorDesk.Application.DTOs.Card;
-using MentorDesk.Application.Abstractions.Repositories;
+﻿using MentorDesk.Application.Abstractions.Repositories;
+using MentorDesk.Application.DTOs.Card;
 
 namespace MentorDesk.Application.Service;
 
