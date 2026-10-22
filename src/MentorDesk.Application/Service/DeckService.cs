@@ -25,7 +25,7 @@ public class DeckService : IDeckService
             })
             .ToList();
     }
-    
+
     public async Task<DeckResponse> CreateDeckAsync(CreateDeckRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.Title))

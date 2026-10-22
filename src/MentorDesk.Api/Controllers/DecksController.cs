@@ -1,9 +1,9 @@
+using MediatR;
+using MentorDesk.Application.DTOs.Card;
+using MentorDesk.Application.DTOs.Deck;
 using MentorDesk.Application.Features.Decks.Import;
 using MentorDesk.Application.Service;
-using MentorDesk.Application.DTOs.Deck;
-using MentorDesk.Application.DTOs.Card;
 using Microsoft.AspNetCore.Mvc;
-using MediatR;
 
 namespace MentorDesk.Api.Controllers;
 
