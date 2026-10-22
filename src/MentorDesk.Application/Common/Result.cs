@@ -26,7 +26,7 @@ public class Result
 public class Result<T> : Result
 {
     public T? Value { get; set; }
-    
+
     public static Result<T> Success(T value)
     {
         return new Result<T>
