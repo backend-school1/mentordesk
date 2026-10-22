@@ -2,11 +2,13 @@ using System.Globalization;
 using CsvHelper;
 using MediatR;
 using MentorDesk.Application.Abstractions.Repositories;
+using MentorDesk.Application.Common;
+using MentorDesk.Application.Exceptions;
 using MentorDesk.Domain.Entities;
 
 namespace MentorDesk.Application.Features.Decks.Import;
 
-public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, ImportResult>
+public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, Result<ImportResult>>
 {
     private readonly IDeckRepository _deckRepository;
     private readonly ICardRepository _cardRepository;
@@ -17,14 +19,13 @@ public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, Impor
         _cardRepository = cardRepository;
     }
 
-    public async Task<ImportResult> Handle(ImportDeckCommand request, CancellationToken cancellationToken)
+    public async Task<Result<ImportResult>> Handle(ImportDeckCommand request, CancellationToken cancellationToken)
     {
         var deck = await _deckRepository.GetDeckAsync(request.DeckId, cancellationToken);
 
         if (deck is null)
         {
-            // Изменить в дальнейшем на 404 при наличии exception middleware
-            throw new InvalidOperationException($"Колода не найдена");
+            return Result<ImportResult>.Failure($"Колода с ID {request.DeckId} не найдена");
         }
 
         using var reader = new StreamReader(request.Csv, leaveOpen: true);
@@ -61,6 +62,6 @@ public class ImportDeckCommandHandler : IRequestHandler<ImportDeckCommand, Impor
 
         await _cardRepository.SaveChangesAsync(cancellationToken);
 
-        return new ImportResult(created);
+        return Result<ImportResult>.Success(new ImportResult(created));
     }
 }
