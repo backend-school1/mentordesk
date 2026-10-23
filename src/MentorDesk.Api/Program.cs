@@ -1,6 +1,7 @@
 using MentorDesk.Api.Bot;
 using MentorDesk.Api.Middlewares;
 using MentorDesk.Application;
+using MentorDesk.Application.Service;
 using MentorDesk.Infrastructure;
 using MentorDesk.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -29,6 +30,8 @@ if (!string.IsNullOrWhiteSpace(botToken))
 builder.Services.AddScoped<UpdateHandler>();
 builder.Services.AddHostedService<BotHostedService>();
 
+builder.Services.AddScoped<IDeckService, DeckService>();
+builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
