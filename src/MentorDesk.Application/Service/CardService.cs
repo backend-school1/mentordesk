@@ -99,7 +99,8 @@ public class CardService : ICardService
         {
             Id = card.Id,
             Question = card.Question,
-            Answer = card.Answer
+            Answer = card.Answer,
+            DeckId = card.DeckId
         }).ToList();
     }
 }
