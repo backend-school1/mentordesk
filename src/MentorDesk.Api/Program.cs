@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ if (!string.IsNullOrWhiteSpace(botToken))
 {
     builder.Services.AddSingleton<ITelegramBotClient>(_ => new TelegramBotClient(botToken));
 }
+var apiKey = builder.Configuration["Api:Key"];
 builder.Services.AddScoped<UpdateHandler>();
 builder.Services.AddHostedService<BotHostedService>();
 
@@ -33,6 +35,26 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/health" ||
+        context.Request.Path == "/health/ready")
+    {
+        await next(context);
+        return;
+    }
+
+    var providedKey = context.Request.Headers["X-Api-Key"].ToString();
+
+    if (string.IsNullOrWhiteSpace(apiKey) || providedKey != apiKey)
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return;
+    }
+    await next(context);
+});
 
 if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 {
