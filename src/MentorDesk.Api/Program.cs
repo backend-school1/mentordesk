@@ -1,4 +1,5 @@
 using MentorDesk.Api.Bot;
+using MentorDesk.Api.Middlewares;
 using MentorDesk.Application;
 using MentorDesk.Application.Service;
 using MentorDesk.Infrastructure;
@@ -31,6 +32,8 @@ builder.Services.AddHostedService<BotHostedService>();
 
 builder.Services.AddScoped<IDeckService, DeckService>();
 builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -51,6 +54,7 @@ if (app.Environment.IsDevelopment())
 app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => false });
 app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
 
+app.UseExceptionHandler();
 app.MapControllers();
 
 app.Run();
