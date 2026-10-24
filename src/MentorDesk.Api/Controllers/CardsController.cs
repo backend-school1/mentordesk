@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MentorDesk.Application.DTOs.Card;
-using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MentorDesk.Api.Controllers;
 

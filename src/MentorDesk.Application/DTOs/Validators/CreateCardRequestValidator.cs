@@ -7,7 +7,6 @@ public class CreateCardRequestValidator : AbstractValidator<CreateCardRequest>
     {
         RuleFor(x => x.Question)
             .NotEmpty().WithMessage("Вопрос не должен быть пустым.");
-        
         RuleFor(x => x.Answer)
             .NotEmpty().WithMessage("Вопрос не должен быть пустым.");
     }

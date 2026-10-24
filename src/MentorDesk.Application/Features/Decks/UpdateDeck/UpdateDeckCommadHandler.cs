@@ -1,8 +1,7 @@
-﻿using FluentValidation;
+﻿using MediatR;
 using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Common;
 using MentorDesk.Application.DTOs.Deck;
-using MediatR;
 
 public class UpdateDeckCommandHandler : IRequestHandler<UpdateDeckCommand, Result<DeckResponse>>
 {

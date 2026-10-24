@@ -1,8 +1,7 @@
-﻿using FluentValidation;
+﻿using MediatR;
 using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Common;
 using MentorDesk.Application.DTOs.Card;
-using MediatR;
 
 public class CreateCardCommandHandler : IRequestHandler<CreateCardCommand, Result<CardResponse>>
 {
