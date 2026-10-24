@@ -60,7 +60,7 @@ public class DecksController : ControllerBase
             return BadRequest(result.ErrorMessage);
         }
 
-        var deck = result.Value;
+        var deck = result.Value!;
 
         return CreatedAtAction(nameof(GetDeck), new { id = deck.Id }, deck);
     }
