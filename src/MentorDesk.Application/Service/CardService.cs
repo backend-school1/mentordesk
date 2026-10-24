@@ -1,37 +1,28 @@
 ﻿using MentorDesk.Application.Abstractions.Repositories;
+using MentorDesk.Application.Common;
 using MentorDesk.Application.DTOs.Card;
+using MentorDesk.Application.DTOs.Deck;
 
 namespace MentorDesk.Application.Service;
 
 public class CardService : ICardService
 {
     private readonly ICardRepository _cardRepository;
+    private readonly IDeckRepository _deckRepository;
 
-    public CardService(ICardRepository cardRepository)
+    public CardService(ICardRepository cardRepository, IDeckRepository deckRepository)
     {
         _cardRepository = cardRepository;
+        _deckRepository = deckRepository;
     }
-    public async Task<CardResponse?> UpdateCardAsync(Guid id, UpdateCardRequest request, CancellationToken cancellationToken)
+
+    public async Task<Result<CardResponse>> UpdateCardAsync(Guid id, UpdateCardRequest request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Question))
-        {
-            throw new ArgumentException(
-                "Вопрос карточки не должен быть пустым.",
-                nameof(request.Question));
-        }
-
-        if (string.IsNullOrWhiteSpace(request.Answer))
-        {
-            throw new ArgumentException(
-                "Ответ карточки не должен быть пустым.",
-                nameof(request.Answer));
-        }
-
         var card = await _cardRepository.GetCardAsync(id, cancellationToken);
 
         if (card is null)
         {
-            return null;
+            return Result<CardResponse>.Failure("Карточка не найдена.");
         }
 
         card.Question = request.Question.Trim();
@@ -39,68 +30,74 @@ public class CardService : ICardService
 
         await _cardRepository.SaveChangesAsync(cancellationToken);
 
-        return new CardResponse
+        var response = new CardResponse
         {
             Id = card.Id,
             DeckId = card.DeckId,
             Question = card.Question,
             Answer = card.Answer
         };
+
+        return Result<CardResponse>.Success(response);
     }
 
-    public async Task<bool> DeleteCardAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Result<bool>> DeleteCardAsync(Guid id, CancellationToken cancellationToken)
     {
         var card = await _cardRepository.GetCardAsync(id, cancellationToken);
 
         if (card is null)
         {
-            return false;
+            return Result<bool>.Failure("Карточка не найдена.");
         }
 
         _cardRepository.RemoveCard(card);
 
         await _cardRepository.SaveChangesAsync(cancellationToken);
 
-        return true;
+        return Result<bool>.Success(true);
     }
 
-    public async Task<CardResponse> CreateCardAsync(Guid deckId, CreateCardRequest request, CancellationToken cancellationToken)
+    public async Task<Result<CardResponse>> CreateCardAsync(Guid deckId, CreateCardRequest request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Question))
-        {
-            throw new ArgumentException(
-                "Вопрос карточки не должен быть пустым.",
-                nameof(request.Question));
-        }
+        var deck = await _deckRepository.GetDeckAsync(deckId, cancellationToken);
 
-        if (string.IsNullOrWhiteSpace(request.Answer))
+        if (deck is null)
         {
-            throw new ArgumentException(
-                "Ответ карточки не должен быть пустым.",
-                nameof(request.Answer));
+            return Result<CardResponse>.Failure("Колода не найдена.");
         }
 
         var card = await _cardRepository.CreateCardAsync(deckId, request.Question.Trim(), request.Answer.Trim(), cancellationToken);
 
-        return new CardResponse
+        var response = new CardResponse
         {
             Id = card.Id,
             DeckId = card.DeckId,
             Question = card.Question,
             Answer = card.Answer
         };
+
+        return Result<CardResponse>.Success(response);
     }
 
-    public async Task<List<CardResponse>> GetCardsAsync(Guid deckId, CancellationToken cancellationToken)
+    public async Task<Result<List<CardResponse>>> GetCardsAsync(Guid deckId, CancellationToken cancellationToken)
     {
+        var deck = await _deckRepository.GetDeckAsync(deckId, cancellationToken);
+
+        if (deck is null)
+        {
+            return Result<List<CardResponse>>.Failure("Колода не найдена.");
+        }
+
         var cards = await _cardRepository.GetCardsByDeckAsync(deckId, cancellationToken);
 
-        return cards.Select(card => new CardResponse
+        var response = cards.Select(card => new CardResponse
         {
             Id = card.Id,
             Question = card.Question,
             Answer = card.Answer,
             DeckId = card.DeckId
         }).ToList();
+
+        return Result<List<CardResponse>>.Success(response);
     }
 }

@@ -1,4 +1,5 @@
-﻿using MentorDesk.Application.DTOs.Card;
+﻿using FluentValidation;
+using MentorDesk.Application.DTOs.Card;
 using MentorDesk.Application.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,26 +18,33 @@ public class CardsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<CardResponse>> UpdateCardAsync([FromRoute] Guid id, [FromBody] UpdateCardRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<CardResponse>> UpdateCardAsync([FromRoute] Guid id, [FromBody] UpdateCardRequest request, [FromServices] IValidator<UpdateCardRequest> validator, CancellationToken cancellationToken)
     {
-        var card = await _cardService.UpdateCardAsync(id, request, cancellationToken);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-        if (card is null)
+        if (!validationResult.IsValid)
         {
-            return NotFound();
+            return BadRequest(validationResult.ToDictionary());
         }
 
-        return Ok(card);
+        var result = await _cardService.UpdateCardAsync(id, request, cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            return NotFound(!result.IsSuccess);
+        }
+
+        return Ok(result.Value);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCardAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var deleted = await _cardService.DeleteCardAsync(id, cancellationToken);
+        var result = await _cardService.DeleteCardAsync(id, cancellationToken);
 
-        if (!deleted)
+        if (!result.IsSuccess)
         {
-            return NotFound();
+            return NotFound(result.ErrorMessage);
         }
 
         return NoContent();

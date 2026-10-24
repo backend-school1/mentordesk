@@ -1,4 +1,5 @@
 ﻿using MentorDesk.Application.Abstractions.Repositories;
+using MentorDesk.Application.Common;
 using MentorDesk.Application.DTOs.Card;
 using MentorDesk.Application.DTOs.Deck;
 
@@ -13,92 +14,85 @@ public class DeckService : IDeckService
         _deckRepository = deckRepository;
     }
 
-    public async Task<List<DeckResponse>> GetAllDecksAsync(CancellationToken cancellationToken)
+    public async Task<Result<List<DeckResponse>>> GetAllDecksAsync(CancellationToken cancellationToken)
     {
-        var deck = await _deckRepository.GetAllDecksAsync(cancellationToken);
+        var decks = await _deckRepository.GetAllDecksAsync(cancellationToken);
 
-        return deck
+        var response = decks
             .Select(deck => new DeckResponse
             {
                 Id = deck.Id,
                 Title = deck.Title
             })
             .ToList();
+
+        return Result<List<DeckResponse>>.Success(response);
     }
 
-    public async Task<DeckResponse> CreateDeckAsync(CreateDeckRequest request, CancellationToken cancellationToken)
+    public async Task<Result<DeckResponse>> CreateDeckAsync(CreateDeckRequest request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Title))
-        {
-            throw new ArgumentException(
-                "Название колоды не должно быть пустым.",
-                nameof(request.Title));
-        }
-
         var deck = await _deckRepository.CreateDeckAsync(request.Title.Trim(), cancellationToken);
 
-        return new DeckResponse
+        var response = new DeckResponse
         {
             Id = deck.Id,
             Title = deck.Title
         };
+
+        return Result<DeckResponse>.Success(response);
     }
 
-    public async Task<DeckResponse?> GetByDeckIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Result<DeckResponse>> GetByDeckIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var deck = await _deckRepository.GetDeckAsync(id, cancellationToken);
+
         if (deck is null)
         {
-            return null;
+            return Result<DeckResponse>.Failure("Колода не найдена.");
         }
 
-        return new DeckResponse
+        var response = new DeckResponse
         {
             Id = deck.Id,
             Title = deck.Title
         };
+
+        return Result<DeckResponse>.Success(response);
     }
 
-    public async Task<bool> DeleteDeckAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Result> DeleteDeckAsync(Guid id, CancellationToken cancellationToken)
     {
         var deck = await _deckRepository.GetDeckAsync(id, cancellationToken);
 
         if (deck is null)
         {
-            return false;
+            return Result.Failure("Колода не найдена.");
         }
 
         await _deckRepository.DeleteDeckAsync(deck, cancellationToken);
 
-        return true;
+        return Result.Success();
     }
 
-    public async Task<DeckResponse?> UpdateDeckAsync(Guid id, UpdateDeckRequest request, CancellationToken cancellationToken)
+    public async Task<Result<DeckResponse>> UpdateDeckAsync(Guid id, UpdateDeckRequest request, CancellationToken cancellationToken)
     {
         var deck = await _deckRepository.GetDeckAsync(id, cancellationToken);
 
         if (deck is null)
         {
-            return null;
-        }
-
-        if (string.IsNullOrWhiteSpace(request.Title))
-        {
-            throw new ArgumentException(
-                "Название колоды не должно быть пустым.",
-                nameof(request.Title));
+            return Result<DeckResponse>.Failure("Колода не найдена.");
         }
 
         deck.Title = request.Title.Trim();
 
-        await _deckRepository.UpdateDeckAsync(
-            deck,
-            cancellationToken);
+        await _deckRepository.UpdateDeckAsync(deck, cancellationToken);
 
-        return new DeckResponse
+        var response = new DeckResponse
         {
             Id = deck.Id,
             Title = deck.Title
         };
+
+        return Result<DeckResponse>.Success(response);
     }
 }

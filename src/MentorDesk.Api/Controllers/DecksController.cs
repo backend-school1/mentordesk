@@ -1,3 +1,4 @@
+using FluentValidation;
 using MediatR;
 using MentorDesk.Application.DTOs.Card;
 using MentorDesk.Application.DTOs.Deck;
@@ -42,15 +43,29 @@ public class DecksController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetDecksAsync(CancellationToken cancellationToken)
     {
-        var decks = await _deckService.GetAllDecksAsync(cancellationToken);
+        var result = await _deckService.GetAllDecksAsync(cancellationToken);
 
-        return Ok(decks);
+        return Ok(result.Value);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateDeck([FromBody] CreateDeckRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateDeck([FromBody] CreateDeckRequest request, [FromServices] IValidator<CreateDeckRequest> validator, CancellationToken cancellationToken)
     {
-        var deck = await _deckService.CreateDeckAsync(request, cancellationToken);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.ToDictionary());
+        }
+
+        var result = await _deckService.CreateDeckAsync(request, cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.ErrorMessage);
+        }
+
+        var deck = result.Value;
 
         return CreatedAtAction(nameof(GetDeck), new { id = deck.Id }, deck);
     }
@@ -59,53 +74,45 @@ public class DecksController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetDeck([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var deck = await _deckService.GetByDeckIdAsync(id, cancellationToken);
+        var result = await _deckService.GetByDeckIdAsync(id, cancellationToken);
 
-        if (deck is null)
+        if (!result.IsSuccess)
         {
-            return NotFound();
+            return NotFound(result.ErrorMessage);
         }
 
-        return Ok(deck);
+        return Ok(result.Value);
     }
 
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateDeck([FromRoute] Guid id, [FromBody] UpdateDeckRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateDeck([FromRoute] Guid id, [FromBody] UpdateDeckRequest request, [FromServices] IValidator<UpdateDeckRequest> validator, CancellationToken cancellationToken)
     {
-        var deck = await _deckService.GetByDeckIdAsync(id, cancellationToken);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-        if (deck is null)
+        if (!validationResult.IsValid)
         {
-            return NotFound();
+            return BadRequest(validationResult.ToDictionary());
         }
 
-        if (string.IsNullOrWhiteSpace(request.Title))
+        var result = await _deckService.UpdateDeckAsync(id, request, cancellationToken);
+
+        if (!result.IsSuccess)
         {
-            throw new ArgumentException(
-                "Название колоды не должно быть пустым.",
-                nameof(request.Title));
+            return NotFound(result.ErrorMessage);
         }
 
-        deck.Title = request.Title.Trim();
-
-        await _deckService.UpdateDeckAsync(id, request, cancellationToken);
-
-        return Ok(new DeckResponse
-        {
-            Id = deck.Id,
-            Title = deck.Title
-        });
+        return Ok(result.Value);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDeckAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var deleted = await _deckService.DeleteDeckAsync(id, cancellationToken);
+        var result = await _deckService.DeleteDeckAsync(id, cancellationToken);
 
-        if (!deleted)
+        if (!result.IsSuccess)
         {
-            return NotFound();
+            return NotFound(result.ErrorMessage);
         }
 
         return NoContent();
@@ -114,16 +121,33 @@ public class DecksController : ControllerBase
     [HttpGet("{deckId:guid}/cards")]
     public async Task<ActionResult<List<CardResponse>>> GetCardsAsync([FromRoute] Guid deckId, CancellationToken cancellationToken)
     {
-        var cards = await _cardService.GetCardsAsync(deckId, cancellationToken);
+        var result = await _cardService.GetCardsAsync(deckId, cancellationToken);
 
-        return Ok(cards);
+        if (!result.IsSuccess)
+        {
+            return NotFound(result.ErrorMessage);
+        }
+
+        return Ok(result.Value);
     }
 
     [HttpPost("{deckId:guid}/cards")]
-    public async Task<ActionResult<CardResponse>> CreateCardAsync([FromRoute] Guid deckId, [FromBody] CreateCardRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<CardResponse>> CreateCardAsync([FromRoute] Guid deckId, [FromBody] CreateCardRequest request, [FromServices] IValidator<CreateCardRequest> validator, CancellationToken cancellationToken)
     {
-        var card = await _cardService.CreateCardAsync(deckId, request, cancellationToken);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
-        return StatusCode(StatusCodes.Status201Created, card);
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.ToDictionary());
+        }
+
+        var result = await _cardService.CreateCardAsync(deckId, request, cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            return NotFound(result.ErrorMessage);
+        }
+
+        return StatusCode(StatusCodes.Status201Created, result.Value);
     }
 }
