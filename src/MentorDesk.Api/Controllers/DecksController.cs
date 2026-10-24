@@ -3,7 +3,6 @@ using MediatR;
 using MentorDesk.Application.DTOs.Card;
 using MentorDesk.Application.DTOs.Deck;
 using MentorDesk.Application.Features.Decks.Import;
-using MentorDesk.Application.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MentorDesk.Api.Controllers;
@@ -13,14 +12,10 @@ namespace MentorDesk.Api.Controllers;
 public class DecksController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IDeckService _deckService;
-    private readonly ICardService _cardService;
 
-    public DecksController(IMediator mediator, IDeckService deckService, ICardService cardService)
+    public DecksController(IMediator mediator)
     {
         _mediator = mediator;
-        _deckService = deckService;
-        _cardService = cardService;
     }
 
     [HttpPost]
@@ -43,7 +38,7 @@ public class DecksController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetDecksAsync(CancellationToken cancellationToken)
     {
-        var result = await _deckService.GetAllDecksAsync(cancellationToken);
+        var result = await _mediator.Send(new GetAllDecksCommand(), cancellationToken);
 
         return Ok(result.Value);
     }
@@ -58,7 +53,7 @@ public class DecksController : ControllerBase
             return BadRequest(validationResult.ToDictionary());
         }
 
-        var result = await _deckService.CreateDeckAsync(request, cancellationToken);
+        var result = await _mediator.Send(new CreateDeckCommand(request.Title), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -74,7 +69,7 @@ public class DecksController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetDeck([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var result = await _deckService.GetByDeckIdAsync(id, cancellationToken);
+        var result = await _mediator.Send(new GetByIdCommand(id), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -95,7 +90,7 @@ public class DecksController : ControllerBase
             return BadRequest(validationResult.ToDictionary());
         }
 
-        var result = await _deckService.UpdateDeckAsync(id, request, cancellationToken);
+        var result = await _mediator.Send(new UpdateDeckCommand(id, request.Title), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -108,7 +103,7 @@ public class DecksController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDeckAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var result = await _deckService.DeleteDeckAsync(id, cancellationToken);
+        var result = await _mediator.Send(new DeleteDeckCommand(id), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -121,7 +116,7 @@ public class DecksController : ControllerBase
     [HttpGet("{deckId:guid}/cards")]
     public async Task<ActionResult<List<CardResponse>>> GetCardsAsync([FromRoute] Guid deckId, CancellationToken cancellationToken)
     {
-        var result = await _cardService.GetCardsAsync(deckId, cancellationToken);
+        var result = await _mediator.Send(new GetCardsCommand(deckId), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -141,7 +136,7 @@ public class DecksController : ControllerBase
             return BadRequest(validationResult.ToDictionary());
         }
 
-        var result = await _cardService.CreateCardAsync(deckId, request, cancellationToken);
+        var result = await _mediator.Send(new CreateCardCommand(deckId, request.Question, request.Answer), cancellationToken);
 
         if (!result.IsSuccess)
         {

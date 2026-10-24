@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MentorDesk.Application.DTOs.Card;
-using MentorDesk.Application.Service;
 using Microsoft.AspNetCore.Mvc;
+using MediatR;
 
 namespace MentorDesk.Api.Controllers;
 
@@ -10,11 +10,11 @@ namespace MentorDesk.Api.Controllers;
 
 public class CardsController : ControllerBase
 {
-    private readonly ICardService _cardService;
+    private readonly IMediator _mediator;
 
-    public CardsController(ICardService cardService)
+    public CardsController(IMediator mediator)
     {
-        _cardService = cardService;
+        _mediator = mediator;
     }
 
     [HttpPut("{id}")]
@@ -27,7 +27,7 @@ public class CardsController : ControllerBase
             return BadRequest(validationResult.ToDictionary());
         }
 
-        var result = await _cardService.UpdateCardAsync(id, request, cancellationToken);
+        var result = await _mediator.Send(new UpdateCardCommand(id, request.Question, request.Answer), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -40,7 +40,7 @@ public class CardsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCardAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var result = await _cardService.DeleteCardAsync(id, cancellationToken);
+        var result = await _mediator.Send(new DeleteCardCommand(id), cancellationToken);
 
         if (!result.IsSuccess)
         {
