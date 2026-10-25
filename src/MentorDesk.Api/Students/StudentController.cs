@@ -28,8 +28,6 @@ public sealed class StudentController(ISender sender) : ControllerBase
     }
 
     [HttpPost]
-
-    [HttpPost]
     public async Task<IActionResult> Create(StudentsDTO.CreateStudentRequest request, CancellationToken ct = default)
     {
         try
