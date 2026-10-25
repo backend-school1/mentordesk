@@ -5,9 +5,12 @@ using MentorDesk.Application.Students;
 
 namespace MentorDesk.Application.Features.Students.Create;
 
-public sealed class CreateStudentsCommandHandler(IStudentRepository repository):IRequestHandler<CreateStudentCommand,Student>
-{
-    public async Task<Student> Handle(CreateStudentCommand request, CancellationToken ct)
+public sealed class CreateStudentsCommandHandler(
+    IStudentRepository repository)
+    : IRequestHandler<CreateStudentCommand, Student?>{
+    public async Task<Student?> Handle(
+        CreateStudentCommand request,
+        CancellationToken ct)
     {
         var userName = TelegramUsernameNormalizer.Normalize(request.TelegramUsername);
         
