@@ -1,12 +1,12 @@
-using MentorDesk.Api.Students;
 using MediatR;
+using MentorDesk.Api.Students;
+using MentorDesk.Application.Features.Students.ChangeStatus;
+using MentorDesk.Application.Features.Students.Create;
+using MentorDesk.Application.Features.Students.GetAll;
 using MentorDesk.Application.Students;
 using MentorDesk.Domain.Entities;
 using MentorDesk.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
-using MentorDesk.Application.Features.Students.Create;
-using MentorDesk.Application.Features.Students.GetAll;
-using MentorDesk.Application.Features.Students.ChangeStatus;
 
 
 namespace MentorDesk.Api.Students;
@@ -28,7 +28,7 @@ public sealed class StudentController(ISender sender) : ControllerBase
     }
 
     [HttpPost]
-    
+
     [HttpPost]
     public async Task<IActionResult> Create(StudentsDTO.CreateStudentRequest request, CancellationToken ct = default)
     {
@@ -53,7 +53,7 @@ public sealed class StudentController(ISender sender) : ControllerBase
     }
 
 
-    
+
     [HttpPatch("{id:guid}/status")]
     public async Task<IActionResult> ChangeStudentStatus(
         Guid id,

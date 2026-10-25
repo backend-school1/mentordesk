@@ -46,8 +46,8 @@ public sealed class ChangeStudentStatusCommandHandlerTests
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }
-    
-    
+
+
     [Fact]
     public async Task StudentNotFound_ReturnsNull()
     {
