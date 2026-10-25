@@ -30,12 +30,13 @@ public class DeckRepository : IDeckRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<Deck> CreateDeckAsync(string title, CancellationToken cancellationToken)
+    public async Task<Deck> CreateDeckAsync(string title, string? description, CancellationToken cancellationToken)
     {
         var deck = new Deck
         {
             Id = Guid.NewGuid(),
-            Title = title
+            Title = title,
+            Description = description
         };
 
         _context.Decks.Add(deck);

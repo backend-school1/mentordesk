@@ -22,13 +22,15 @@ public class UpdateDeckCommandHandler : IRequestHandler<UpdateDeckCommand, Resul
         }
 
         deck.Title = request.Title.Trim();
+        deck.Description = request.Description?.Trim();
 
         await _deckRepository.UpdateDeckAsync(deck, cancellationToken);
 
         var response = new DeckResponse
         {
             Id = deck.Id,
-            Title = deck.Title
+            Title = deck.Title,
+            Description = deck.Description,
         };
 
         return Result<DeckResponse>.Success(response);

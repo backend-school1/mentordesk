@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MentorDesk.Application.DTOs.Deck;
 
-public class UpdateDeckRequestValidator : AbstractValidator<UpdateDeckRequest>
+public class UpdateDeckRequestValidator : AbstractValidator<UpdateDeckCommand>
 {
     public UpdateDeckRequestValidator()
     {

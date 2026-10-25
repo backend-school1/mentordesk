@@ -14,7 +14,7 @@ public class CreateDeckCommandHandler : IRequestHandler<CreateDeckCommand, Resul
 
     public async Task<Result<DeckResponse>> Handle(CreateDeckCommand request, CancellationToken cancellationToken)
     {
-        var deck = await _deckRepository.CreateDeckAsync(request.Title.Trim(), cancellationToken);
+        var deck = await _deckRepository.CreateDeckAsync(request.Title.Trim(), request.Description?.Trim(), cancellationToken);
 
         var response = new DeckResponse
         {

@@ -3,16 +3,16 @@ using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Common;
 using MentorDesk.Application.DTOs.Deck;
 
-public class GetByIdCommandHandler : IRequestHandler<GetByIdCommand, Result<DeckResponse>>
+public class GetByIdQueryHandler : IRequestHandler<GetByIdQuery, Result<DeckResponse>>
 {
     private readonly IDeckRepository _deckRepository;
 
-    public GetByIdCommandHandler(IDeckRepository deckRepository)
+    public GetByIdQueryHandler(IDeckRepository deckRepository)
     {
         _deckRepository = deckRepository;
     }
 
-    public async Task<Result<DeckResponse>> Handle(GetByIdCommand request, CancellationToken cancellationToken)
+    public async Task<Result<DeckResponse>> Handle(GetByIdQuery request, CancellationToken cancellationToken)
     {
         var deck = await _deckRepository.GetDeckAsync(request.id, cancellationToken);
 

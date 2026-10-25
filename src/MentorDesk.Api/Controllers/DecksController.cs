@@ -38,22 +38,15 @@ public class DecksController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetDecksAsync(CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetAllDecksCommand(), cancellationToken);
+        var result = await _mediator.Send(new GetAllDecksQuery(), cancellationToken);
 
         return Ok(result.Value);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateDeck([FromBody] CreateDeckRequest request, [FromServices] IValidator<CreateDeckRequest> validator, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateDeck([FromBody] CreateDeckRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.ToDictionary());
-        }
-
-        var result = await _mediator.Send(new CreateDeckCommand(request.Title), cancellationToken);
+        var result = await _mediator.Send(new CreateDeckCommand(request.Title, request.Description), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -69,7 +62,7 @@ public class DecksController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetDeck([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetByIdCommand(id), cancellationToken);
+        var result = await _mediator.Send(new GetByIdQuery(id), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -81,16 +74,9 @@ public class DecksController : ControllerBase
 
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateDeck([FromRoute] Guid id, [FromBody] UpdateDeckRequest request, [FromServices] IValidator<UpdateDeckRequest> validator, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateDeck([FromRoute] Guid id, [FromBody] UpdateDeckRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.ToDictionary());
-        }
-
-        var result = await _mediator.Send(new UpdateDeckCommand(id, request.Title), cancellationToken);
+        var result = await _mediator.Send(new UpdateDeckCommand(id, request.Title, request.Description), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -116,7 +102,7 @@ public class DecksController : ControllerBase
     [HttpGet("{deckId:guid}/cards")]
     public async Task<ActionResult<List<CardResponse>>> GetCardsAsync([FromRoute] Guid deckId, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetCardsCommand(deckId), cancellationToken);
+        var result = await _mediator.Send(new GetCardsQuery(deckId), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -127,15 +113,8 @@ public class DecksController : ControllerBase
     }
 
     [HttpPost("{deckId:guid}/cards")]
-    public async Task<ActionResult<CardResponse>> CreateCardAsync([FromRoute] Guid deckId, [FromBody] CreateCardRequest request, [FromServices] IValidator<CreateCardRequest> validator, CancellationToken cancellationToken)
+    public async Task<ActionResult<CardResponse>> CreateCardAsync([FromRoute] Guid deckId, [FromBody] CreateCardRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.ToDictionary());
-        }
-
         var result = await _mediator.Send(new CreateCardCommand(deckId, request.Question, request.Answer), cancellationToken);
 
         if (!result.IsSuccess)

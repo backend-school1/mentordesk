@@ -7,7 +7,6 @@ namespace MentorDesk.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-
 public class CardsController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -18,20 +17,13 @@ public class CardsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<CardResponse>> UpdateCardAsync([FromRoute] Guid id, [FromBody] UpdateCardRequest request, [FromServices] IValidator<UpdateCardRequest> validator, CancellationToken cancellationToken)
+    public async Task<ActionResult<CardResponse>> UpdateCardAsync([FromRoute] Guid id, [FromBody] UpdateCardRequest request, CancellationToken cancellationToken)
     {
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
-
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(validationResult.ToDictionary());
-        }
-
         var result = await _mediator.Send(new UpdateCardCommand(id, request.Question, request.Answer), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            return NotFound(!result.IsSuccess);
+            return NotFound(result.ErrorMessage);
         }
 
         return Ok(result.Value);

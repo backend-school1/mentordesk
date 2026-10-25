@@ -3,18 +3,18 @@ using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Common;
 using MentorDesk.Application.DTOs.Card;
 
-public class GetCardsCommandHandler : IRequestHandler<GetCardsCommand, Result<List<CardResponse>>>
+public class GetCardsQueryHandler : IRequestHandler<GetCardsQuery, Result<List<CardResponse>>>
 {
     private readonly ICardRepository _cardRepository;
     private readonly IDeckRepository _deckRepository;
 
-    public GetCardsCommandHandler(ICardRepository cardRepository, IDeckRepository deckRepository)
+    public GetCardsQueryHandler(ICardRepository cardRepository, IDeckRepository deckRepository)
     {
         _cardRepository = cardRepository;
         _deckRepository = deckRepository;
     }
 
-    public async Task<Result<List<CardResponse>>> Handle(GetCardsCommand request, CancellationToken cancellationToken)
+    public async Task<Result<List<CardResponse>>> Handle(GetCardsQuery request, CancellationToken cancellationToken)
     {
         var deck = await _deckRepository.GetDeckAsync(request.deckId, cancellationToken);
 
