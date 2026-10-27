@@ -38,4 +38,13 @@ public class TelegramMarkdownFormatterTests
         result.Should().ContainSingle().Which.Should()
             .Be("<pre>if (age &lt; 18)\n{\nreturn;\n}</pre>");
     }
+
+    [Fact]
+    public void Format_WhenInputExceedsTelegramMessageLimit_ShouldSplitIntoMultipleMessages()
+    {
+        var result = TelegramMarkdownFormatter.Format(new string('a', 5000));
+
+        result.Should().HaveCountGreaterThan(1);
+        result.Should().OnlyContain(x => x.Length <= 4096);
+    }
 }
