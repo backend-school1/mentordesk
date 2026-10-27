@@ -1,4 +1,4 @@
-﻿namespace MentorDesk.Api.Middleware;
+﻿namespace MentorDesk.Api.Middlewares;
 
 public class ApiKeyMiddleware
 {

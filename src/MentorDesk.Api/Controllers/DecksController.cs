@@ -23,6 +23,12 @@ public class DecksController : ControllerBase
 
         var result = await _mediator.Send(new ImportDeckCommand(deckId, stream), cancellationToken);
 
-        return Ok(result);
+        return result.IsSuccess ?
+            Ok(result.Value) :
+            NotFound(new
+            {
+                message = result.ErrorMessage,
+                statusCode = StatusCodes.Status404NotFound
+            });
     }
 }

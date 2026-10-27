@@ -47,7 +47,8 @@ public class ImportDeckCommandHandlerTests
 
         var result = await _handler.Handle(command, CancellationToken.None);
 
-        result.Created.Should().Be(2);
+        result.IsSuccess.Should().BeTrue();
+        result.Value!.Created.Should().Be(2);
 
         _cardRepositoryMock.Verify(
             r => r.AddCards(It.Is<IEnumerable<Card>>(cards => cards.Count() == 2), It.IsAny<CancellationToken>()),
@@ -83,7 +84,8 @@ public class ImportDeckCommandHandlerTests
 
         var result = await _handler.Handle(command, CancellationToken.None);
 
-        result.Created.Should().Be(1);
+        result.IsSuccess.Should().BeTrue();
+        result.Value!.Created.Should().Be(1);
 
         _cardRepositoryMock.Verify(
             r => r.AddCards(It.Is<IEnumerable<Card>>(cards => cards.Count() == 1), It.IsAny<CancellationToken>()),
