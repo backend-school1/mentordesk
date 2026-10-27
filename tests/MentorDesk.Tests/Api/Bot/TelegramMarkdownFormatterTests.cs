@@ -28,4 +28,14 @@ public class TelegramMarkdownFormatterTests
 
         result.Should().ContainSingle().Which.Should().Be("<code>Where</code> для фильтрации");
     }
+
+    [Fact]
+    public void Format_WhenInputContainsCodeBlockWithSpecialCharacters_ShouldEscapeHtmlCharacters()
+    {
+        var result = TelegramMarkdownFormatter
+            .Format("```csharp\nif (age < 18)\n{\nreturn;\n}\n```");
+
+        result.Should().ContainSingle().Which.Should()
+            .Be("<pre>if (age &lt; 18)\n{\nreturn;\n}</pre>");
+    }
 }
