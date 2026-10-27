@@ -12,4 +12,12 @@ public class TelegramMarkdownFormatterTests
 
         result.Should().ContainSingle().Which.Should().Be("SOLID");
     }
+
+    [Fact]
+    public void Format_WhenInputIsMarkdownList_ShouldReplaceHyphensWithBullets()
+    {
+        var result = TelegramMarkdownFormatter.Format("- First\n- Second");
+
+        result.Should().ContainSingle().Which.Should().Be("• First\n• Second");
+    }
 }
