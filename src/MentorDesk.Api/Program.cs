@@ -33,6 +33,9 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+app.UseRouting();
+
+app.UseMiddleware<ApiKeyMiddleware>();
 
 if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 {
