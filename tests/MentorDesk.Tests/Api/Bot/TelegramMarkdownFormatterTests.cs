@@ -20,4 +20,12 @@ public class TelegramMarkdownFormatterTests
 
         result.Should().ContainSingle().Which.Should().Be("• First\n• Second");
     }
+
+    [Fact]
+    public void Format_WhenInputContainsInlineCode_ShouldConvertToHtml()
+    {
+        var result = TelegramMarkdownFormatter.Format("`Where` для фильтрации");
+
+        result.Should().ContainSingle().Which.Should().Be("<code>Where</code> для фильтрации");
+    }
 }
