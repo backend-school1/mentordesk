@@ -23,7 +23,8 @@ public class GetByIdQueryHandler : IRequestHandler<GetByIdQuery, Result<DeckResp
         var response = new DeckResponse
         {
             Id = deck.Id,
-            Title = deck.Title
+            Title = deck.Title,
+            Description = deck.Description
         };
 
         return Result<DeckResponse>.Success(response);

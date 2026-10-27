@@ -9,6 +9,6 @@ public class UpdateCardRequestValidator : AbstractValidator<UpdateCardCommand>
             .NotEmpty().WithMessage("Вопрос не должен быть пустым.");
 
         RuleFor(x => x.Answer)
-            .NotEmpty().WithMessage("Вопрос не должен быть пустым.");
+            .NotEmpty().WithMessage("Ответ не должен быть пустым.");
     }
 }

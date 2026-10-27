@@ -20,7 +20,8 @@ public class GetAllDecksQueryHandler : IRequestHandler<GetAllDecksQuery, Result<
             .Select(deck => new DeckResponse
             {
                 Id = deck.Id,
-                Title = deck.Title
+                Title = deck.Title,
+                Description = deck.Description,
             })
             .ToList();
 

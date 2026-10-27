@@ -19,7 +19,8 @@ public class CreateDeckCommandHandler : IRequestHandler<CreateDeckCommand, Resul
         var response = new DeckResponse
         {
             Id = deck.Id,
-            Title = deck.Title
+            Title = deck.Title,
+            Description = deck.Description,
         };
 
         return Result<DeckResponse>.Success(response);
