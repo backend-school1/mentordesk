@@ -15,7 +15,7 @@ namespace MentorDesk.Infrastructure.Migrations
     [Migration("20261017115132_AddStudents")]
     partial class AddStudents
     {
-        /// <inheritdoc />
+
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

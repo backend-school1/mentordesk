@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MentorDesk.Infrastructure.Migrations
 {
-    /// <inheritdoc />
+
     public partial class AddStudents : Migration
     {
-        /// <inheritdoc />
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -32,8 +32,7 @@ namespace MentorDesk.Infrastructure.Migrations
                 column: "TelegramUserName",
                 unique: true);
         }
-
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

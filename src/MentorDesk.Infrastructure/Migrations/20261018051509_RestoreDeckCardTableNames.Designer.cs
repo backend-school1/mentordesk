@@ -15,7 +15,7 @@ namespace MentorDesk.Infrastructure.Migrations
     [Migration("20261018051509_RestoreDeckCardTableNames")]
     partial class RestoreDeckCardTableNames
     {
-        /// <inheritdoc />
+
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
