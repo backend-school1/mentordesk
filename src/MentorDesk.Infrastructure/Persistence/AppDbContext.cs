@@ -6,9 +6,9 @@ namespace MentorDesk.Infrastructure.Persistence;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     // DbSet-ы сущностей появятся здесь (задача #1 — Deck и Card).
-    public DbSet<Deck> Decks => Set<Deck>();
-    public DbSet<Card> Cards => Set<Card>();
-    public DbSet<Student> Students => Set<Student>();
+    public DbSet<Deck> Decks { get; set; }
+    public DbSet<Card> Cards { get; set; }
+    public DbSet<Student> Students { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
