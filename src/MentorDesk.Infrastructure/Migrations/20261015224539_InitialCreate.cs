@@ -49,7 +49,7 @@ namespace MentorDesk.Infrastructure.Migrations
                 table: "Cards",
                 column: "DeckId");
         }
-        
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

@@ -5,7 +5,7 @@ using MentorDesk.Domain.Entities;
 using MentorDesk.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace MentorDesk.Infrastructure .Persistence.Repositories;
+namespace MentorDesk.Infrastructure.Persistence.Repositories;
 
 /// <summary>
 /// 

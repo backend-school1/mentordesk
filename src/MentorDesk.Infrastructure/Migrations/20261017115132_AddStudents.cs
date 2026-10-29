@@ -32,7 +32,7 @@ namespace MentorDesk.Infrastructure.Migrations
                 column: "TelegramUserName",
                 unique: true);
         }
-        
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
