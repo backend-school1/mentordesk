@@ -1,4 +1,5 @@
 using MediatR;
+using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Students;
 using MentorDesk.Domain.Entities;
 

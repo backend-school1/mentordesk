@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
-namespace MentorDesk.Infrastructure;
+namespace MentorDesk.Infrastructure.Configurations;
 /// <summary>
 /// Represents the configuration EF settings for a student in the MentorDesk system.
 /// </summary>

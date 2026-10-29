@@ -1,10 +1,11 @@
 using System;
+using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Students;
 using MentorDesk.Domain.Entities;
 using MentorDesk.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace MentorDesk.Infrastructure;
+namespace MentorDesk.Infrastructure .Persistence.Repositories;
 
 /// <summary>
 /// 

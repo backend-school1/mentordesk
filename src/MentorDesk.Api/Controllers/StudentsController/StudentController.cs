@@ -9,10 +9,10 @@ using MentorDesk.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace MentorDesk.Api.Students;
+namespace MentorDesk.Api.Controllers.StudentsController;
 
 [ApiController]
-[Route("students")]
+[Route("api/[controller]")]
 
 public sealed class StudentController(ISender sender) : ControllerBase
 {

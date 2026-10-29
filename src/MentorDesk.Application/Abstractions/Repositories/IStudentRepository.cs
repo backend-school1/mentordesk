@@ -1,6 +1,6 @@
 ﻿using MentorDesk.Domain.Entities;
 
-namespace MentorDesk.Application.Students;
+namespace MentorDesk.Application.Abstractions.Repositories;
 
 /// <summary>
 /// Student repository interface for managing student entities in the MentorDesk system.
