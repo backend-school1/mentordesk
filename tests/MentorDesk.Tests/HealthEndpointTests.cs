@@ -1,4 +1,5 @@
 using System.Net;
+using MentorDesk.Api;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace MentorDesk.Tests;

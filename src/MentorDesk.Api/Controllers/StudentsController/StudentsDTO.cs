@@ -1,12 +1,11 @@
-using MentorDesk.Domain.Entities;
+using System.Text.Json.Serialization;
 using MentorDesk.Domain.Enums;
-
-namespace MentorDesk.Api.Students;
 
 public class StudentsDTO
 {
     public sealed record CreateStudentRequest(string telegramUserName);
-    public sealed record ChangeStudentStatusRequest(string status);
+    public sealed record ChangeStudentStatusRequest(
+        [property: JsonConverter(typeof(JsonStringEnumConverter<StudentStatus>))] StudentStatus status);
 
     public sealed record StudentResponse(
         Guid id,

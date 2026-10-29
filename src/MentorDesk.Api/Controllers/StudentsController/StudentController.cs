@@ -1,9 +1,7 @@
 using MediatR;
-using MentorDesk.Api.Students;
 using MentorDesk.Application.Features.Students.ChangeStatus;
 using MentorDesk.Application.Features.Students.Create;
 using MentorDesk.Application.Features.Students.GetAll;
-using MentorDesk.Application.Students;
 using MentorDesk.Domain.Entities;
 using MentorDesk.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -17,64 +15,41 @@ namespace MentorDesk.Api.Controllers.StudentsController;
 public sealed class StudentController(ISender sender) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll(
-        CancellationToken ct = default)
+    public async Task<IActionResult> GetAll(CancellationToken ct = default)
     {
-        var query = new GetStudentsQuery();
+        var result = await sender.Send(new GetStudentsQuery(), ct);
 
-        var students = await sender.Send(query, ct);
-
-        return Ok(students.Select(ToResponse));
+        return Ok(result.Value!.Select(ToResponse));
     }
-
+    
     [HttpPost]
     public async Task<IActionResult> Create(StudentsDTO.CreateStudentRequest request, CancellationToken ct = default)
     {
-        try
-        {
-            var command = new CreateStudentCommand(
-                request.telegramUserName);
+        var command = new CreateStudentCommand(
+            request.telegramUserName);
 
-            var student = await sender.Send(command, ct);
+        var result = await sender.Send(command, ct);
 
-            if (student is null)
-                return Conflict("Student already exists");
+        if (!result.IsSuccess)
+            return Conflict(result.ErrorMessage);
 
-            return StatusCode(
-                StatusCodes.Status201Created,
-                ToResponse(student));
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
+        return StatusCode(
+            StatusCodes.Status201Created,
+            ToResponse(result.Value!));
     }
 
-
-
+    
     [HttpPatch("{id:guid}/status")]
-    public async Task<IActionResult> ChangeStudentStatus(
-        Guid id,
-        StudentsDTO.ChangeStudentStatusRequest request,
+    public async Task<IActionResult> ChangeStudentStatus(Guid id, [FromBody] StudentsDTO.ChangeStudentStatusRequest request,
         CancellationToken ct = default)
     {
-        if (!Enum.TryParse<StudentStatus>(
-                request.status, true, out var status)
-            || !Enum.IsDefined(status))
-        {
-            return BadRequest("Invalid status");
-        }
+        var command = new ChangeStudentStatusCommand(id, request.status);
 
-        var command = new ChangeStudentStatusCommand(
-            id,
-            status);
+        var result = await sender.Send(command, ct);
 
-        var student = await sender.Send(command, ct);
+        if (!result.IsSuccess) return NotFound(result.ErrorMessage);
 
-        if (student is null)
-            return NotFound("Student not found");
-
-        return Ok(ToResponse(student));
+        return Ok(ToResponse(result.Value!));
     }
 
 

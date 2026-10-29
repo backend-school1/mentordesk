@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Common;
-using MentorDesk.Application.DTOs.Card;
+
+namespace MentorDesk.Application.Features.Cards.DeleteCard;
 
 public class DeleteCardCommandHandler : IRequestHandler<DeleteCardCommand, Result<bool>>
 {

@@ -1,18 +1,21 @@
 using MediatR;
 using MentorDesk.Application.Abstractions.Repositories;
-using MentorDesk.Application.Students;
+using MentorDesk.Application.Common;
 using MentorDesk.Domain.Entities;
 
 namespace MentorDesk.Application.Features.Students.GetAll;
 
 public sealed class GetStudentsQueryHandler(
     IStudentRepository repository)
-    : IRequestHandler<GetStudentsQuery, List<Student>>
+    : IRequestHandler<GetStudentsQuery, Result<List<Student>>>
 {
-    public async Task<List<Student>> Handle(
+    public async Task<Result<List<Student>>> Handle(
         GetStudentsQuery request,
         CancellationToken cancellationToken)
     {
-        return await repository.GetAllAsync(cancellationToken);
+        var students = await repository.GetAllAsync(
+            cancellationToken);
+
+        return Result<List<Student>>.Success(students);
     }
 }

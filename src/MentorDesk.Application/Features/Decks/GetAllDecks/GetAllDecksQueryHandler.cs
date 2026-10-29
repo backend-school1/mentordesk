@@ -3,6 +3,8 @@ using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Common;
 using MentorDesk.Application.DTOs.Deck;
 
+namespace MentorDesk.Application.Features.Decks.GetAllDecks;
+
 public class GetAllDecksQueryHandler : IRequestHandler<GetAllDecksQuery, Result<List<DeckResponse>>>
 {
     private readonly IDeckRepository _deckRepository;

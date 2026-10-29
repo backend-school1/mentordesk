@@ -1,5 +1,4 @@
 using MentorDesk.Application.Abstractions.Repositories;
-using MentorDesk.Application.Students;
 using MentorDesk.Infrastructure.Persistence;
 using MentorDesk.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;

@@ -58,4 +58,7 @@ app.MapControllers();
 
 app.Run();
 
-public partial class Program;
+namespace MentorDesk.Api
+{
+    public partial class Program;
+}
