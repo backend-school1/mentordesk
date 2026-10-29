@@ -27,4 +27,31 @@ public class CardRepository : ICardRepository
     {
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<Card?> GetCardAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _context.Cards.FirstOrDefaultAsync(card => card.Id == id, cancellationToken);
+    }
+
+    public void RemoveCard(Card card)
+    {
+        _context.Cards.Remove(card);
+    }
+
+    public async Task<Card> CreateCardAsync(Guid deckId, string question, string answer, CancellationToken cancellationToken)
+    {
+        var card = new Card
+        {
+            Id = Guid.NewGuid(),
+            DeckId = deckId,
+            Question = question,
+            Answer = answer
+        };
+
+        _context.Cards.Add(card);
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return card;
+    }
 }

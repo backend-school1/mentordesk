@@ -1,4 +1,5 @@
 using MentorDesk.Api.Bot;
+using MentorDesk.Api.Middlewares;
 using MentorDesk.Application;
 using MentorDesk.Infrastructure;
 using MentorDesk.Infrastructure.Persistence;
@@ -27,8 +28,13 @@ if (!string.IsNullOrWhiteSpace(botToken))
 }
 builder.Services.AddScoped<UpdateHandler>();
 builder.Services.AddHostedService<BotHostedService>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+app.UseRouting();
+
+app.UseMiddleware<ApiKeyMiddleware>();
 
 if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 {
@@ -47,6 +53,7 @@ if (app.Environment.IsDevelopment())
 app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => false });
 app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
 
+app.UseExceptionHandler();
 app.MapControllers();
 
 app.Run();
