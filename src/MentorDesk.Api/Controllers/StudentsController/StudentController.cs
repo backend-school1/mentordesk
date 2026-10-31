@@ -40,16 +40,17 @@ public sealed class StudentController(ISender sender) : ControllerBase
 
     
     [HttpPatch("{id:guid}/status")]
-    public async Task<IActionResult> ChangeStudentStatus(Guid id, [FromBody] StudentsDTO.ChangeStudentStatusRequest request,
-        CancellationToken ct = default)
+    public async Task<IActionResult> ChangeStatus(
+        Guid id,
+        StudentsDTO.ChangeStudentStatusRequest request,
+        CancellationToken ct)
     {
-        var command = new ChangeStudentStatusCommand(id, request.status);
+        var command = new ChangeStudentStatusCommand(
+            id, request.Status);
 
         var result = await sender.Send(command, ct);
 
-        if (!result.IsSuccess) return NotFound(result.ErrorMessage);
-
-        return Ok(ToResponse(result.Value!));
+        return Ok(result);
     }
 
 
