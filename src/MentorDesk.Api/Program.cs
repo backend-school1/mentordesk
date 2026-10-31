@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using MentorDesk.Api.Bot;
 using MentorDesk.Api.Middlewares;
 using MentorDesk.Application;
@@ -10,7 +11,14 @@ using Telegram.Bot;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter(
+                allowIntegerValues: false));
+    });
+
 builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("Postgres")
