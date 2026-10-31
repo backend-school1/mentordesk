@@ -33,6 +33,7 @@ namespace MentorDesk.Infrastructure.Migrations
                 unique: true);
         }
 
+
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

@@ -21,7 +21,7 @@ public sealed class StudentController(ISender sender) : ControllerBase
 
         return Ok(result.Value!.Select(ToResponse));
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateStudentRequest request, CancellationToken ct = default)
     {
@@ -38,7 +38,7 @@ public sealed class StudentController(ISender sender) : ControllerBase
             ToResponse(result.Value!));
     }
 
-    
+
     [HttpPatch("{id:guid}/status")]
     public async Task<IActionResult> ChangeStatus(
         Guid id,

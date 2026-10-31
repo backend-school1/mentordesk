@@ -6,7 +6,7 @@ public sealed class CreateStudentCommandValidator : AbstractValidator<CreateStud
 {
     public CreateStudentCommandValidator()
     {
-        RuleFor(x => x.TelegramUsername)
+        RuleFor(x => x.TelegramUserName)
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .WithMessage("Username is required.")
