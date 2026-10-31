@@ -3,6 +3,8 @@ using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Common;
 using MentorDesk.Application.DTOs.Card;
 
+namespace MentorDesk.Application.Features.Cards.CreateCard;
+
 public class CreateCardCommandHandler : IRequestHandler<CreateCardCommand, Result<CardResponse>>
 {
     private readonly ICardRepository _cardRepository;
