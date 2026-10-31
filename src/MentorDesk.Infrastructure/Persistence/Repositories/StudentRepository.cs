@@ -1,14 +1,9 @@
-using System;
 using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Domain.Entities;
-using MentorDesk.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace MentorDesk.Infrastructure.Persistence.Repositories;
 
-/// <summary>
-/// 
-/// </summary>
 public sealed class StudentRepository(AppDbContext db) : IStudentRepository
 {
     public async Task<bool> ExistsByUsernameAsync(string username, CancellationToken ct = default)

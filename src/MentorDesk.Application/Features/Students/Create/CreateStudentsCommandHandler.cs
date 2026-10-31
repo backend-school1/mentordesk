@@ -11,7 +11,7 @@ public sealed class CreateStudentsCommandHandler(IStudentRepository repository)
 {
     public async Task<Result<Student>> Handle(CreateStudentCommand request, CancellationToken ct)
     {
-        var userName = TelegramUsernameNormalizer.Normalize(request.TelegramUsername);
+        var userName = TelegramUsernameNormalizer.Normalize(request.TelegramUserName);
 
         var exists = await repository.ExistsByUsernameAsync(userName, ct);
 

@@ -4,4 +4,4 @@ using MentorDesk.Domain.Entities;
 
 namespace MentorDesk.Application.Features.Students.Create;
 
-public sealed record CreateStudentCommand(string TelegramUsername) : IRequest<Result<Student>>;
+public sealed record CreateStudentCommand(string TelegramUserName) : IRequest<Result<Student>>;
