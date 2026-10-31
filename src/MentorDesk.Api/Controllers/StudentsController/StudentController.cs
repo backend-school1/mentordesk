@@ -23,10 +23,10 @@ public sealed class StudentController(ISender sender) : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> Create(StudentsDTO.CreateStudentRequest request, CancellationToken ct = default)
+    public async Task<IActionResult> Create([FromBody] CreateStudentRequest request, CancellationToken ct = default)
     {
         var command = new CreateStudentCommand(
-            request.telegramUserName);
+            request.TelegramUserName);
 
         var result = await sender.Send(command, ct);
 
@@ -42,7 +42,7 @@ public sealed class StudentController(ISender sender) : ControllerBase
     [HttpPatch("{id:guid}/status")]
     public async Task<IActionResult> ChangeStatus(
         Guid id,
-        StudentsDTO.ChangeStudentStatusRequest request,
+        ChangeStudentStatusRequest request,
         CancellationToken ct)
     {
         var command = new ChangeStudentStatusCommand(
@@ -55,9 +55,9 @@ public sealed class StudentController(ISender sender) : ControllerBase
 
 
 
-    private static StudentsDTO.StudentResponse ToResponse(Student s)
+    private static StudentResponse ToResponse(Student s)
     {
-        return new StudentsDTO.StudentResponse(
+        return new StudentResponse(
             s.Id,
             s.TelegramUserName,
             s.TelegramId,
