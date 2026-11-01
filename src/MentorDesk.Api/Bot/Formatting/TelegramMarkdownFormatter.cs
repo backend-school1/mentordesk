@@ -9,7 +9,30 @@ public static class TelegramMarkdownFormatter
         if (string.IsNullOrEmpty(markdown))
             return [];
 
-        return [ConvertInlineCode(ReplaceListMarkers(EscapeHtml(markdown)))];
+        var parts = markdown.Split("```");
+        var blocks = new List<string>();
+
+        for (int i = 0; i < parts.Length; i++)
+        {
+            string block;
+
+            if (i % 2 == 1)
+            {
+                // нечётный индекс - это блок кода
+                block = FormatCodeBlock(parts[i]);
+            }
+            else
+            {
+                block = FormatText(parts[i].Trim('\n'));
+            }
+
+            if (block.Length > 0)
+            {
+                blocks.Add(block);
+            }
+        }
+
+        return [string.Join("\n", blocks)];
     }
 
     /// <summary>
@@ -51,7 +74,7 @@ public static class TelegramMarkdownFormatter
     /// <returns>Форматированный текст</returns>
     private static string ReplaceListMarkers(string text)
     {
-        var lines = EscapeHtml(text).Split('\n');
+        var lines = text.Split('\n');
 
         for (int i = 0; i < lines.Length; i++)
         {
@@ -64,6 +87,12 @@ public static class TelegramMarkdownFormatter
         return string.Join("\n", lines);
     }
 
+    /// <summary>
+    /// Заменяет инлайн-код в markdown (текст между обратными кавычками)
+    /// на HTML-тег code 
+    /// </summary>
+    /// <param name="text">Текст, уже экранированный через EscapeHtml</param>
+    /// <returns>Обработанный текст</returns>
     private static string ConvertInlineCode(string text)
     {
         var result = new StringBuilder(text.Length);
@@ -94,5 +123,36 @@ public static class TelegramMarkdownFormatter
         result.Append(text, position, text.Length - position);
 
         return result.ToString();
+    }
+
+    /// <summary>
+    /// Оборачивает блок кода в теги pre
+    /// </summary>
+    /// <param name="codePart">Содержимое между ```</param>
+    /// <returns>Обработанный блок кода в pre</returns>
+    private static string FormatCodeBlock(string codePart)
+    {
+        var firstLineEnd = codePart.IndexOf('\n');
+        string code;
+        if (firstLineEnd == -1)
+        {
+            code = codePart;
+        }
+        else
+        {
+            code = codePart[(firstLineEnd + 1)..];
+        }
+
+        return $"<pre>{EscapeHtml(code)}</pre>";
+    }
+
+    /// <summary>
+    /// Преобразует обычный фрагмент markdown в HTML, без блоков кода
+    /// </summary>
+    /// <param name="text">Исходный фрагмент текста</param>
+    /// <returns>Экранированный фрагмент с маркерами списка и инлайн-кодом</returns>
+    private static string FormatText(string text)
+    {
+        return ConvertInlineCode(ReplaceListMarkers(EscapeHtml(text)));
     }
 }
