@@ -9,7 +9,7 @@ public static class TelegramMarkdownFormatter
         if (string.IsNullOrEmpty(markdown))
             return [];
 
-        return [ReplaceListMarkers(EscapeHtml(markdown))];
+        return [ConvertInlineCode(ReplaceListMarkers(EscapeHtml(markdown)))];
     }
 
     /// <summary>
@@ -62,5 +62,37 @@ public static class TelegramMarkdownFormatter
         }
 
         return string.Join("\n", lines);
+    }
+
+    private static string ConvertInlineCode(string text)
+    {
+        var result = new StringBuilder(text.Length);
+        var position = 0;
+
+        while (position < text.Length)
+        {
+            var start = text.IndexOf('`', position);
+            if (start == -1)
+            {
+                break;
+            }
+
+            var end = text.IndexOf('`', start + 1);
+            if (end == -1)
+            {
+                break;
+            }
+
+            result.Append(text, position, start - position);
+            result.Append("<code>");
+            result.Append(text, start + 1, end - start - 1);
+            result.Append("</code>");
+
+            position = end + 1;
+        }
+
+        result.Append(text, position, text.Length - position);
+
+        return result.ToString();
     }
 }
