@@ -6,6 +6,9 @@ public static class TelegramMarkdownFormatter
 {
     private const int MaxMessageLength = 4096;
     
+    // длина тегов <pre></pre>, для деления больших блоков кода
+    private const int PreTagsLength = 11;
+    
     public static IReadOnlyList<string> Format(string markdown)
     {
         if (string.IsNullOrEmpty(markdown))
@@ -16,26 +19,24 @@ public static class TelegramMarkdownFormatter
 
         for (int i = 0; i < parts.Length; i++)
         {
-            string block;
-
             if (i % 2 == 1)
             {
                 // нечётный индекс - это блок кода
-                block = FormatCodeBlock(parts[i]);
+                blocks.AddRange(FormatCodeBlock(parts[i]));
             }
             else
             {
                 // чётный индекс - это блок текста
-                block = FormatText(parts[i].Trim('\n'));
-            }
+                var text = FormatText(parts[i].Trim('\n'));
 
-            if (block.Length > MaxMessageLength && i % 2 == 0)
-            {
-                blocks.AddRange(SplitBlockInHalf(block, MaxMessageLength));
-            }
-            else if (block.Length > 0)
-            {
-                blocks.Add(block);
+                if (text.Length > MaxMessageLength)
+                {
+                    blocks.AddRange(SplitBlockInHalf(text, MaxMessageLength));
+                }
+                else if (text.Length > 0)
+                {
+                    blocks.Add(text);
+                }
             }
         }
 
@@ -137,7 +138,7 @@ public static class TelegramMarkdownFormatter
     /// </summary>
     /// <param name="codePart">Содержимое между ```</param>
     /// <returns>Обработанный блок кода в pre</returns>
-    private static string FormatCodeBlock(string codePart)
+    private static List<string> FormatCodeBlock(string codePart)
     {
         var firstLineEnd = codePart.IndexOf('\n');
         string code;
@@ -150,7 +151,15 @@ public static class TelegramMarkdownFormatter
             code = codePart[(firstLineEnd + 1)..];
         }
 
-        return $"<pre>{EscapeHtml(code)}</pre>";
+        var pieces = SplitBlockInHalf(EscapeHtml(code), MaxMessageLength - PreTagsLength);
+        var result = new List<string>();
+
+        foreach (string piece in pieces)
+        {
+            result.Add($"<pre>{piece}</pre>");
+        }
+        
+        return result;
     }
 
     /// <summary>
