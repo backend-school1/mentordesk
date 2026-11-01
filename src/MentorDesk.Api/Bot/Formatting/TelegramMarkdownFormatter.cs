@@ -4,6 +4,8 @@ namespace MentorDesk.Api.Bot.Formatting;
 
 public static class TelegramMarkdownFormatter
 {
+    private const int MaxMessageLength = 4096;
+    
     public static IReadOnlyList<string> Format(string markdown)
     {
         if (string.IsNullOrEmpty(markdown))
@@ -23,16 +25,21 @@ public static class TelegramMarkdownFormatter
             }
             else
             {
+                // чётный индекс - это блок текста
                 block = FormatText(parts[i].Trim('\n'));
             }
 
-            if (block.Length > 0)
+            if (block.Length > MaxMessageLength && i % 2 == 0)
+            {
+                blocks.AddRange(SplitBlockInHalf(block, MaxMessageLength));
+            }
+            else if (block.Length > 0)
             {
                 blocks.Add(block);
             }
         }
 
-        return [string.Join("\n", blocks)];
+        return PackIntoMessages(blocks);
     }
 
     /// <summary>
@@ -154,5 +161,85 @@ public static class TelegramMarkdownFormatter
     private static string FormatText(string text)
     {
         return ConvertInlineCode(ReplaceListMarkers(EscapeHtml(text)));
+    }
+
+    /// <summary>
+    /// Собирает готовые HTML блоки в сообщения таким образом, чтобы
+    /// длина не превышала лимита Telegram, без нарушения целостности блока
+    /// </summary>
+    /// <param name="blocks">Готовые HTML блоки</param>
+    /// <returns>Список сообщений для отправки</returns>
+    private static List<string> PackIntoMessages(List<string> blocks)
+    {
+        var messages = new List<string>();
+        var current = new StringBuilder();
+
+        foreach (string block in blocks)
+        {
+            if (current.Length == 0)
+            {
+                current.Append(block);
+            }
+            else
+            {
+                var lengthWithBlock = current.Length + 1 + block.Length;
+
+                if (lengthWithBlock <= MaxMessageLength)
+                {
+                    current.Append('\n');
+                    current.Append(block);
+                }
+                else
+                {
+                    messages.Add(current.ToString());
+                    current.Clear();
+                    current.Append(block);
+                }
+            }
+        }
+
+        if (current.Length > 0)
+        {
+            messages.Add(current.ToString());
+        }
+
+        return messages;
+    }
+
+    /// <summary>
+    /// Делит длинный блок кода пополам до ближайшего перевода строки,
+    /// пока каждый кусочек не станет короче лимита Telegram
+    /// </summary>
+    /// <param name="block">Блок, который нужно поделить</param>
+    /// <param name="maxLength">Максимальная длина одного куска</param>
+    /// <returns>Список кусков блока, каждый из которых помещается в сообщение</returns>
+    private static List<string> SplitBlockInHalf(string block, int maxLength)
+    {
+        if (block.Length <= maxLength)
+        {
+            return [block];
+        }
+
+        var middle = block.Length / 2;
+        var newLineIndex = block.LastIndexOf('\n', middle);
+
+        string left;
+        string right;
+
+        if (newLineIndex > 0)
+        {
+            left = block[..newLineIndex];
+            right = block[(newLineIndex + 1)..];
+        }
+        else
+        {
+            left = block[..middle];
+            right = block[middle..];
+        }
+
+        var result = SplitBlockInHalf(left, maxLength);
+        result.AddRange(SplitBlockInHalf(right, maxLength));
+
+        return result;
     }
 }
