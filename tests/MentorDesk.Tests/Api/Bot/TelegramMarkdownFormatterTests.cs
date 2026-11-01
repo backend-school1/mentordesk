@@ -36,7 +36,7 @@ public class TelegramMarkdownFormatterTests
             .Format("```csharp\nif (age < 18)\n{\nreturn;\n}\n```");
 
         result.Should().ContainSingle().Which.Should()
-            .Be("<pre>if (age &lt; 18)\n{\nreturn;\n}</pre>");
+            .Be("<pre>if (age &lt; 18)\n{\nreturn;\n}\n</pre>");
     }
 
     [Fact]

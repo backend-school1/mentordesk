@@ -6,7 +6,10 @@ public static class TelegramMarkdownFormatter
 {
     public static IReadOnlyList<string> Format(string markdown)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(markdown))
+            return [];
+
+        return [ReplaceListMarkers(EscapeHtml(markdown))];
     }
 
     /// <summary>
@@ -39,5 +42,25 @@ public static class TelegramMarkdownFormatter
         }
 
         return stringBuilder.ToString();
+    }
+
+    /// <summary>
+    /// Заменяет маркеры списка на символ "• "
+    /// </summary>
+    /// <param name="text">Исходный текст</param>
+    /// <returns>Форматированный текст</returns>
+    private static string ReplaceListMarkers(string text)
+    {
+        var lines = EscapeHtml(text).Split('\n');
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            if (lines[i].StartsWith("- "))
+            {
+                lines[i] = "• " + lines[i][2..];
+            }
+        }
+
+        return string.Join("\n", lines);
     }
 }
