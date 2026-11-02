@@ -55,4 +55,16 @@ public class TelegramMarkdownFormatterTests
 
         result.Should().ContainSingle().Which.Should().Be("Это <b>важно</b> знать");
     }
+    
+    [Fact]
+    public void Format_WhenCodeBlockExceedsTelegramMessageLimit_ShouldSplitAndWrapEachPartInPre()
+    {
+        var code = string.Join("\n", Enumerable.Repeat("var x = 1;", 1000));
+
+        var result = TelegramMarkdownFormatter.Format($"```csharp\n{code}\n```");
+
+        result.Should().HaveCountGreaterThan(1);
+        result.Should().OnlyContain(x => x.Length <= 4096);
+        result.Should().OnlyContain(x => x.StartsWith("<pre>") && x.EndsWith("</pre>"));
+    }
 }
