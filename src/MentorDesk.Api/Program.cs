@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using MentorDesk.Api.Bot;
 using MentorDesk.Api.Middlewares;
+using MentorDesk.Api.Bot.Commands;
 using MentorDesk.Application;
 using MentorDesk.Infrastructure;
 using MentorDesk.Infrastructure.Persistence;
@@ -34,6 +35,7 @@ if (!string.IsNullOrWhiteSpace(botToken))
 {
     builder.Services.AddSingleton<ITelegramBotClient>(_ => new TelegramBotClient(botToken));
 }
+builder.Services.AddScoped<IBotCommand, StartCommand>();
 builder.Services.AddScoped<UpdateHandler>();
 builder.Services.AddHostedService<BotHostedService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
