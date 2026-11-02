@@ -3,6 +3,8 @@ using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Common;
 using MentorDesk.Application.DTOs.Deck;
 
+namespace MentorDesk.Application.Features.Decks.CreateDeck;
+
 public class CreateDeckCommandHandler : IRequestHandler<CreateDeckCommand, Result<DeckResponse>>
 {
     private readonly IDeckRepository _deckRepository;

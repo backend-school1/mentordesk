@@ -2,7 +2,14 @@ using FluentValidation;
 using MediatR;
 using MentorDesk.Application.DTOs.Card;
 using MentorDesk.Application.DTOs.Deck;
+using MentorDesk.Application.Features.Cards.CreateCard;
+using MentorDesk.Application.Features.Cards.GetCards;
+using MentorDesk.Application.Features.Decks.CreateDeck;
+using MentorDesk.Application.Features.Decks.DeleteDeck;
+using MentorDesk.Application.Features.Decks.GetAllDecks;
+using MentorDesk.Application.Features.Decks.GetByIdDeck;
 using MentorDesk.Application.Features.Decks.Import;
+using MentorDesk.Application.Features.Decks.UpdateDeck;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MentorDesk.Api.Controllers;
@@ -26,13 +33,7 @@ public class DecksController : ControllerBase
 
         var result = await _mediator.Send(new ImportDeckCommand(deckId, stream), cancellationToken);
 
-        return result.IsSuccess ?
-            Ok(result.Value) :
-            NotFound(new
-            {
-                message = result.ErrorMessage,
-                statusCode = StatusCodes.Status404NotFound
-            });
+        return Ok(result);
     }
 
     [HttpGet]

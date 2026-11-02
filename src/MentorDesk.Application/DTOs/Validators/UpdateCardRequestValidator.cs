@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
-using MentorDesk.Application.DTOs.Card;
+using MentorDesk.Application.Features.Cards.UpdateCard;
+
+namespace MentorDesk.Application.DTOs.Validators;
 
 public class UpdateCardRequestValidator : AbstractValidator<UpdateCardCommand>
 {

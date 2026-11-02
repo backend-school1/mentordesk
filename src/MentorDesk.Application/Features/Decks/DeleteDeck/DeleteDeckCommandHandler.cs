@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Common;
-using MentorDesk.Application.DTOs.Deck;
+
+namespace MentorDesk.Application.Features.Decks.DeleteDeck;
 
 public class DeleteDeckCommandHandler : IRequestHandler<DeleteDeckCommand, Result>
 {

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using MentorDesk.Application.Common;
-using MentorDesk.Application.DTOs.Deck;
+
+namespace MentorDesk.Application.Features.Decks.DeleteDeck;
 
 public record DeleteDeckCommand(Guid id) : IRequest<Result>;

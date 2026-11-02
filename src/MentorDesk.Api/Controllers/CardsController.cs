@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
 using MentorDesk.Application.DTOs.Card;
+using MentorDesk.Application.Features.Cards.DeleteCard;
+using MentorDesk.Application.Features.Cards.UpdateCard;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MentorDesk.Api.Controllers;

@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
-using MentorDesk.Application.DTOs.Deck;
+using MentorDesk.Application.Features.Decks.CreateDeck;
+
+namespace MentorDesk.Application.DTOs.Validators;
 
 public class CreateDeckRequestValidator : AbstractValidator<CreateDeckCommand>
 {
