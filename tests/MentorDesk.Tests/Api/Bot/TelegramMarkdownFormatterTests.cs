@@ -55,7 +55,7 @@ public class TelegramMarkdownFormatterTests
 
         result.Should().ContainSingle().Which.Should().Be("Это <b>важно</b> знать");
     }
-    
+
     [Fact]
     public void Format_WhenCodeBlockExceedsTelegramMessageLimit_ShouldSplitAndWrapEachPartInPre()
     {

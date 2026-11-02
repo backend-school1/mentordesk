@@ -5,10 +5,10 @@ namespace MentorDesk.Api.Bot.Formatting;
 public static class TelegramMarkdownFormatter
 {
     private const int MaxMessageLength = 4096;
-    
+
     // длина тегов <pre></pre>, для деления больших блоков кода
     private const int PreTagsLength = 11;
-    
+
     public static IReadOnlyList<string> Format(string markdown)
     {
         if (string.IsNullOrEmpty(markdown))
@@ -158,7 +158,7 @@ public static class TelegramMarkdownFormatter
         {
             result.Add($"<pre>{piece}</pre>");
         }
-        
+
         return result;
     }
 
