@@ -169,7 +169,7 @@ public static class TelegramMarkdownFormatter
     /// <returns>Экранированный фрагмент с маркерами списка и инлайн-кодом</returns>
     private static string FormatText(string text)
     {
-        return ConvertInlineCode(ReplaceListMarkers(EscapeHtml(text)));
+        return ConvertBold(ConvertInlineCode(ReplaceListMarkers(EscapeHtml(text))));
     }
 
     /// <summary>
@@ -250,5 +250,42 @@ public static class TelegramMarkdownFormatter
         result.AddRange(SplitBlockInHalf(right, maxLength));
 
         return result;
+    }
+
+    /// <summary>
+    /// Заменяет жирнвй текст в markdown на HTML тег
+    /// </summary>
+    /// <param name="text">Текст, уже экранированный через EscapeHtml</param>
+    /// <returns>Обработанный текст</returns>
+    private static string ConvertBold(string text)
+    {
+        var result = new StringBuilder();
+        var position = 0;
+
+        while (position < text.Length)
+        {
+            var start = text.IndexOf("**", position, StringComparison.Ordinal);
+            if (start == -1)
+            {
+                break;
+            }
+
+            var end = text.IndexOf("**", start + 2, StringComparison.Ordinal);
+            if (end == -1)
+            {
+                break;
+            }
+
+            result.Append(text, position, start - position);
+            result.Append("<b>");
+            result.Append(text, start + 2, end - start - 2);
+            result.Append("</b>");
+
+            position = end + 2;
+        }
+
+        result.Append(text, position, text.Length - position);
+
+        return result.ToString();
     }
 }

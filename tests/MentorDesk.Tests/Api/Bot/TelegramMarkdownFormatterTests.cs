@@ -47,4 +47,12 @@ public class TelegramMarkdownFormatterTests
         result.Should().HaveCountGreaterThan(1);
         result.Should().OnlyContain(x => x.Length <= 4096);
     }
+
+    [Fact]
+    public void Format_WhenInputContainsBoldText_ShouldConvertToHtml()
+    {
+        var result = TelegramMarkdownFormatter.Format("Это **важно** знать");
+
+        result.Should().ContainSingle().Which.Should().Be("Это <b>важно</b> знать");
+    }
 }
