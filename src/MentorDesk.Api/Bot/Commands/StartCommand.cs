@@ -31,8 +31,8 @@ public class StartCommand : IBotCommand
         var incomingUsername = telegramUser.Username?.Trim().TrimStart('@');
         var students = await _studentRepository.GetAllAsync(cancellationToken);
 
-        var studentFound = students.FirstOrDefault(s =>(s.TelegramId.HasValue && s.TelegramId.Value == telegramUser.Id) || (!string.IsNullOrEmpty(incomingUsername) && string.Equals(s.TelegramUserName?.Trim().TrimStart('@'), incomingUsername, StringComparison.OrdinalIgnoreCase)));
-        
+        var studentFound = students.FirstOrDefault(s => (s.TelegramId.HasValue && s.TelegramId.Value == telegramUser.Id) || (!string.IsNullOrEmpty(incomingUsername) && string.Equals(s.TelegramUserName?.Trim().TrimStart('@'), incomingUsername, StringComparison.OrdinalIgnoreCase)));
+
         if (studentFound == null)
         {
             await botClient.SendMessage(chatId: message.Chat.Id, text: "Доступа нет, напиши ментору", cancellationToken: cancellationToken);
