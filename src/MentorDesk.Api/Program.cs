@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using MentorDesk.Api.Bot;
-using MentorDesk.Api.Middlewares;
 using MentorDesk.Api.Bot.Commands;
+using MentorDesk.Api.Middlewares;
 using MentorDesk.Application;
 using MentorDesk.Infrastructure;
 using MentorDesk.Infrastructure.Persistence;
