@@ -3,7 +3,6 @@ using MentorDesk.Application.Features.Students.ChangeStatus;
 using MentorDesk.Application.Features.Students.Create;
 using MentorDesk.Application.Features.Students.GetAll;
 using MentorDesk.Domain.Entities;
-using MentorDesk.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 
