@@ -30,4 +30,9 @@ public sealed class StudentRepository(AppDbContext db) : IStudentRepository
     {
         return await db.Students.FirstOrDefaultAsync(s => s.Id == id, ct);
     }
+
+    public async Task<Student?> GetByTelegramIdAsync(long telegramId, CancellationToken ct = default)
+    {
+        return await db.Students.FirstOrDefaultAsync(s => s.TelegramId == telegramId, ct);
+    }
 }
