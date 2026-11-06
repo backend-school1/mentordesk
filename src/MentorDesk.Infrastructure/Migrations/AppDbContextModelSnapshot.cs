@@ -79,6 +79,9 @@ namespace MentorDesk.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("SelectedDeckId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(16)
@@ -94,6 +97,8 @@ namespace MentorDesk.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SelectedDeckId");
+
                     b.HasIndex("TelegramUserName")
                         .IsUnique();
 
@@ -107,6 +112,13 @@ namespace MentorDesk.Infrastructure.Migrations
                         .HasForeignKey("DeckId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MentorDesk.Domain.Entities.Student", b =>
+                {
+                    b.HasOne("MentorDesk.Domain.Entities.Deck", null)
+                        .WithMany()
+                        .HasForeignKey("SelectedDeckId");
                 });
 #pragma warning restore 612, 618
         }
