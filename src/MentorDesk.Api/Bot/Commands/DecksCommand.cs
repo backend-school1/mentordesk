@@ -59,7 +59,7 @@ public class DecksCommand : IBotCommand
         var keyboard = new InlineKeyboardMarkup(decks.Select(deck => new[]
         {
             InlineKeyboardButton.WithCallbackData(deck.Title,
-                $"select_deck:{deck.Id}")
+                $"{BotConstants.SelectDeckCallbackPrefix}{deck.Id}")
         }));
 
         await botClient.SendMessage(chatId: message.Chat.Id,
