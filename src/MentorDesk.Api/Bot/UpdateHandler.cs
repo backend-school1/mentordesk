@@ -5,13 +5,19 @@ using Telegram.Bot.Types;
 namespace MentorDesk.Api.Bot;
 
 /// <summary>
-/// Обработчик одного апдейта. Пока отвечает заглушкой на любое сообщение;
+/// Обработчик одного апдейта.
 /// команды (/start, /decks и т.д.) добавляются задачами из бэклога.
 /// </summary>
-public class UpdateHandler(ILogger<UpdateHandler> logger, IEnumerable<IBotCommand> commands)
+public class UpdateHandler(ILogger<UpdateHandler> logger, IEnumerable<IBotCommand> commands, DeckSelectionCallbackHandler deckSelectionCallbackHandler)
 {
     public async Task HandleAsync(ITelegramBotClient bot, Update update, CancellationToken ct)
     {
+        if (update.CallbackQuery is { } callbackQuery)
+        {
+            await deckSelectionCallbackHandler.HandleAsync(bot, callbackQuery, ct);
+            return;
+        }
+        
         if (update.Message is not { Text: { } text } message)
         {
             return;

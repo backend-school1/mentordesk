@@ -20,5 +20,7 @@ public class Student
     public StudentStatus Status { get; set; } = StudentStatus.Active;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    
+    public Guid? SelectedDeckId { get; set; }
 
 }

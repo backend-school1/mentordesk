@@ -14,8 +14,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
     public void Configure(EntityTypeBuilder<Student> builder)
     {
         builder.HasKey(s => s.Id);
-
-
+        
         builder.Property(s => s.TelegramUserName)
             .IsRequired()
             .HasMaxLength(32);
@@ -33,8 +32,9 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
 
         builder.Property(s => s.CreatedAt)
             .IsRequired();
-
-
-
+        
+        builder.HasOne<Deck>()
+            .WithMany()
+            .HasForeignKey(s => s.SelectedDeckId);
     }
 }

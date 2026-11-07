@@ -36,7 +36,9 @@ if (!string.IsNullOrWhiteSpace(botToken))
     builder.Services.AddSingleton<ITelegramBotClient>(_ => new TelegramBotClient(botToken));
 }
 builder.Services.AddScoped<IBotCommand, StartCommand>();
+builder.Services.AddScoped<IBotCommand, DecksCommand>();
 builder.Services.AddScoped<UpdateHandler>();
+builder.Services.AddScoped<DeckSelectionCallbackHandler>();
 builder.Services.AddHostedService<BotHostedService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
