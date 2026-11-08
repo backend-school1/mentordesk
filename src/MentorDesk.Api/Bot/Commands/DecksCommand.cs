@@ -17,23 +17,23 @@ public class DecksCommand : IBotCommand
         _studentRepository = studentRepository;
         _deckRepository = deckRepository;
     }
-    
+
     public async Task ExecuteAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
         var telegramUser = message.From;
-        
+
         if (telegramUser == null)
         {
             await botClient.SendMessage(chatId: message.Chat.Id,
                 text: "Доступа нет, напиши ментору",
                 cancellationToken: cancellationToken);
-            
+
             return;
         }
 
         var incomingUsername = telegramUser.Username?.Trim().TrimStart('@');
         var students = await _studentRepository.GetAllAsync(cancellationToken);
-        
+
         var studentFound = students.FirstOrDefault(s => (s.TelegramId.HasValue && s.TelegramId.Value == telegramUser.Id)
                                                         || (!string.IsNullOrEmpty(incomingUsername) && string.Equals(s.TelegramUserName?.Trim().TrimStart('@'), incomingUsername, StringComparison.OrdinalIgnoreCase)));
 
@@ -44,7 +44,7 @@ public class DecksCommand : IBotCommand
                 cancellationToken: cancellationToken);
             return;
         }
-        
+
         var decks = await _deckRepository.GetAllDecksAsync(cancellationToken);
 
         if (decks.Count == 0)
@@ -52,7 +52,7 @@ public class DecksCommand : IBotCommand
             await botClient.SendMessage(chatId: message.Chat.Id,
                 text: "Колод пока нет",
                 cancellationToken: cancellationToken);
-            
+
             return;
         }
 

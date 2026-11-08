@@ -17,7 +17,7 @@ public class UpdateHandler(ILogger<UpdateHandler> logger, IEnumerable<IBotComman
             await deckSelectionCallbackHandler.HandleAsync(bot, callbackQuery, ct);
             return;
         }
-        
+
         if (update.Message is not { Text: { } text } message)
         {
             return;

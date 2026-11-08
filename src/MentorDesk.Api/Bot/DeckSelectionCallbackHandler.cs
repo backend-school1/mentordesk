@@ -19,7 +19,7 @@ public class DeckSelectionCallbackHandler
     {
         var callbackData = callbackQuery.Data;
 
-        if (string.IsNullOrEmpty(callbackData) 
+        if (string.IsNullOrEmpty(callbackData)
             || !callbackData.StartsWith(BotConstants.SelectDeckCallbackPrefix, StringComparison.Ordinal))
         {
             return;
@@ -40,7 +40,7 @@ public class DeckSelectionCallbackHandler
                 callbackQuery.Id,
                 text: "Колода не найдена",
                 cancellationToken: cancellationToken);
-            
+
             return;
         }
 
@@ -48,7 +48,7 @@ public class DeckSelectionCallbackHandler
         var incomingUsername = telegramUser.Username?.Trim().TrimStart('@');
 
         var students = await _studentRepository.GetAllAsync(cancellationToken);
-        
+
         var studentFound = students.FirstOrDefault(s =>
             (s.TelegramId.HasValue && s.TelegramId.Value == telegramUser.Id) ||
             (!string.IsNullOrEmpty(incomingUsername) &&
@@ -63,7 +63,7 @@ public class DeckSelectionCallbackHandler
                 callbackQuery.Id,
                 text: "Доступа нет, напиши ментору",
                 cancellationToken: cancellationToken);
-            
+
             return;
         }
 
@@ -75,7 +75,7 @@ public class DeckSelectionCallbackHandler
                 callbackQuery.Id,
                 text: "Доступа нет, напиши ментору",
                 cancellationToken: cancellationToken);
-            
+
             return;
         }
 
