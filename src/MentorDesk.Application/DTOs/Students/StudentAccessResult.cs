@@ -6,3 +6,6 @@ public enum StudentAccessStatus
     RequiresBinding,
     Denied
 }
+
+public sealed record StudentAccessResult(StudentAccessStatus Status, Guid? StudentId);
+
