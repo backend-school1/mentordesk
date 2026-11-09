@@ -3,7 +3,6 @@ using MentorDesk.Application.Features.Students.ChangeStatus;
 using MentorDesk.Application.Features.Students.Create;
 using MentorDesk.Application.Features.Students.GetAll;
 using MentorDesk.Domain.Entities;
-using MentorDesk.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -50,7 +49,11 @@ public sealed class StudentController(ISender sender) : ControllerBase
 
         var result = await sender.Send(command, ct);
 
-        return Ok(result);
+        if (!result.IsSuccess)
+            return NotFound(result.ErrorMessage);
+
+        return Ok(ToResponse(result.Value!));
+
     }
 
 

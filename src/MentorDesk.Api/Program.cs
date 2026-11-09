@@ -53,7 +53,7 @@ if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
     await db.Database.MigrateAsync();
 }
 
-app.UseMiddleware<ApiKeyMiddleware>();
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -61,7 +61,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+app.UseMiddleware<ApiKeyMiddleware>();
 
 // /health — процесс жив; /health/ready — ещё и БД доступна.
 app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => false });
