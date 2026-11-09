@@ -41,12 +41,12 @@ public class ApiKeyTests(WebApplicationFactory<Program> factory) : IClassFixture
     {
         var client = _factory.CreateClient();
 
-        var withoutKey = await client.GetAsync("/openapi/v1.json");
+        var withoutKey = await client.GetAsync("/swagger/v1/swagger.json");
         Assert.Equal(HttpStatusCode.Unauthorized, withoutKey.StatusCode);
 
         client.DefaultRequestHeaders.Add("X-Api-Key", "test-only-api-key");
 
-        var withKey = await client.GetAsync("/openapi/v1.json");
+        var withKey = await client.GetAsync("/swagger/v1/swagger.json");
         Assert.Equal(HttpStatusCode.OK, withKey.StatusCode);
     }
     [Fact]

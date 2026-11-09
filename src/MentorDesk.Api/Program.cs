@@ -7,7 +7,6 @@ using MentorDesk.Infrastructure;
 using MentorDesk.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
 using Telegram.Bot;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,8 +18,6 @@ builder.Services.AddControllers()
             new JsonStringEnumConverter(
                 allowIntegerValues: false));
     });
-
-builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString("Postgres")
     ?? throw new InvalidOperationException("Не задана строка подключения ConnectionStrings:Postgres");
@@ -35,16 +32,19 @@ if (!string.IsNullOrWhiteSpace(botToken))
 {
     builder.Services.AddSingleton<ITelegramBotClient>(_ => new TelegramBotClient(botToken));
 }
+
 builder.Services.AddScoped<IBotCommand, StartCommand>();
 builder.Services.AddScoped<UpdateHandler>();
 builder.Services.AddHostedService<BotHostedService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 app.UseRouting();
 
-app.UseMiddleware<ApiKeyMiddleware>();
+
 
 if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 {
@@ -53,11 +53,15 @@ if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
     await db.Database.MigrateAsync();
 }
 
+app.UseMiddleware<ApiKeyMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+
 
 // /health — процесс жив; /health/ready — ещё и БД доступна.
 app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => false });

@@ -27,7 +27,7 @@ public class DecksController : ControllerBase
 
     [HttpPost]
     [Route("{deckId}/import")]
-    public async Task<ActionResult<ImportResult>> ImportDeck(Guid deckId, [FromForm] IFormFile file, CancellationToken cancellationToken)
+    public async Task<ActionResult<ImportResult>> ImportDeck(Guid deckId, IFormFile file, CancellationToken cancellationToken)
     {
         using var stream = file.OpenReadStream();
 

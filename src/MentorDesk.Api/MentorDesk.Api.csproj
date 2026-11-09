@@ -12,7 +12,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.12" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.17.14" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.3.1" />
+
     <PackageReference Include="Telegram.Bot" Version="22.10.3.3" />
   </ItemGroup>
 
