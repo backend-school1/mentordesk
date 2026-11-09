@@ -49,7 +49,11 @@ public sealed class StudentController(ISender sender) : ControllerBase
 
         var result = await sender.Send(command, ct);
 
-        return Ok(result);
+        if (!result.IsSuccess)
+            return NotFound(result.ErrorMessage);
+
+        return Ok(ToResponse(result.Value!));
+        
     }
 
 
