@@ -53,7 +53,7 @@ public sealed class StudentController(ISender sender) : ControllerBase
             return NotFound(result.ErrorMessage);
 
         return Ok(ToResponse(result.Value!));
-        
+
     }
 
 

@@ -1,9 +1,9 @@
 
 using MentorDesk.Application.Abstractions.Repositories;
 using MentorDesk.Application.Features.Students.Access;
-using StudentEntity = MentorDesk.Domain.Entities.Student;
 using MentorDesk.Domain.Enums;
 using Moq;
+using StudentEntity = MentorDesk.Domain.Entities.Student;
 
 namespace MentorDesk.Tests.Features.Student;
 
@@ -49,7 +49,7 @@ public sealed class CheckStudentAccessQueryHandlerTests
             Times.Never);
     }
 
-   
+
     [Fact]
     public async Task ArchivedStudent_WithMatchingTelegramId_ReturnsDenied()
     {
@@ -121,7 +121,7 @@ public sealed class CheckStudentAccessQueryHandlerTests
         Assert.Null(result.StudentId);
     }
 
-   
+
     [Fact]
     public async Task ActiveStudent_WithoutTelegramId_ReturnsRequiresBinding()
     {
@@ -213,7 +213,7 @@ public sealed class CheckStudentAccessQueryHandlerTests
     {
         const long telegramId = 911;
         // Arrange
-       // const long existingTelegramId = 123;
+        // const long existingTelegramId = 123;
         const long incomingTelegramId = 999;
 
         var student = new StudentEntity

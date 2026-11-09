@@ -40,5 +40,5 @@ public sealed class StudentRepository(AppDbContext db) : IStudentRepository
     {
         return await db.Students.FirstOrDefaultAsync(s => s.TelegramUserName == username, ct);
     }
-    
+
 }

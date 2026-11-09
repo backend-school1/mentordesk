@@ -29,7 +29,7 @@ public class ApiKeyTests() : IDisposable
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
-    
+
     [Fact]
     public async Task Import_WithWrongApiKey_ReturnsUnauthorized()
     {
@@ -41,7 +41,7 @@ public class ApiKeyTests() : IDisposable
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
-    
+
     [Fact]
     public async Task Swagger_IsAccessibleWithoutApiKey_InDevelopment()
     {
@@ -57,7 +57,7 @@ public class ApiKeyTests() : IDisposable
 
         Assert.Equal(HttpStatusCode.OK, jsonResponse.StatusCode);
     }
-    
+
     [Fact]
     public async Task Readiness_WithoutApiKey_ReturnsHealthStatus()
     {
@@ -69,7 +69,7 @@ public class ApiKeyTests() : IDisposable
             response.StatusCode == HttpStatusCode.OK ||
             response.StatusCode == HttpStatusCode.ServiceUnavailable);
     }
-    
+
     [Fact]
     public async Task Development_WithoutApiKey_PassesMiddleware()
     {
@@ -80,7 +80,7 @@ public class ApiKeyTests() : IDisposable
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-    
+
     [Fact]
     public async Task Staging_WithCorrectApiKey_PassesMiddleware()
     {

@@ -14,7 +14,7 @@ public class ApiKeyMiddleware
 
         _disableKeyValidation = configuration.GetValue<bool>("Api:DisableKeyValidation");
     }
-    
+
     public async Task InvokeAsync(
         HttpContext context,
         IHostEnvironment environment)
