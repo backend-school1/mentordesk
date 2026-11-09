@@ -1,40 +1,22 @@
 using System.Net;
-using MentorDesk.Api;
-using Microsoft.AspNetCore.Hosting;
+using MentorDesk.Tests.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace MentorDesk.Tests;
+namespace MentorDesk.Tests.Api;
 
-public class ApiKeyTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+public class ApiKeyTests() : IDisposable
 {
-    private readonly WebApplicationFactory<Program> _developmentFactory =
-        factory.WithWebHostBuilder(builder =>
-        {
-            
-            builder.UseSetting(
-                "ConnectionStrings:Postgres",
-                "Host=127.0.0.1;Database=mentordesk_test;Username=test;Password=test");
-            
-            builder.UseEnvironment("Development");
-            builder.UseSetting("Database:MigrateOnStartup", "false");
-            builder.UseSetting("Telegram:BotToken", "");
-            builder.UseSetting("Api:DisableKeyValidation", "true");
-        });
+    private readonly ApiKeyTestFactory _developmentFactory =
+        new("Development", true);
 
-    private readonly WebApplicationFactory<Program> _securedFactory =
-        factory.WithWebHostBuilder(builder =>
-        {
-            builder.UseEnvironment("Staging");
+    private readonly ApiKeyTestFactory _securedFactory =
+        new("Staging", false);
 
-            builder.UseSetting(
-                "ConnectionStrings:Postgres",
-                "Host=127.0.0.1;Database=mentordesk_test;Username=test;Password=test");
-
-            builder.UseSetting("Database:MigrateOnStartup", "false");
-            builder.UseSetting("Telegram:BotToken", "");
-            builder.UseSetting("Api:Key", "test-only-api-key");
-            builder.UseSetting("Api:DisableKeyValidation", "false");
-        });
+    public void Dispose()
+    {
+        _developmentFactory.Dispose();
+        _securedFactory.Dispose();
+    }
 
     [Fact]
     public async Task Import_WithoutApiKey_ReturnsUnauthorized()

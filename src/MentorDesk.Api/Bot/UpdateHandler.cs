@@ -40,15 +40,12 @@ public class UpdateHandler(ILogger<UpdateHandler> logger, IEnumerable<IBotComman
             return;
         }
 
-        if (accessResult.Status == StudentAccessStatus.RequiresBinding)
+        if (accessResult.Status == StudentAccessStatus.RequiresBinding && !string.Equals(commandName, "/start",
+            StringComparison.OrdinalIgnoreCase))
         {
-            if (commandName != "/start")
-            {
-                await bot.SendMessage(message.Chat.Id,
-                    "Для начала работы отправь /start",
-                    cancellationToken: ct);
-                return;
-            }
+            await bot.SendMessage(message.Chat.Id, "Для начала работы отправь /start",
+                cancellationToken: ct);
+            return;
         }
 
         var command = commands.FirstOrDefault(c => string.Equals(c.Command, commandName, 
