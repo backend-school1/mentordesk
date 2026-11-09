@@ -1,4 +1,6 @@
+using MediatR;
 using MentorDesk.Api.Bot.Commands;
+using MentorDesk.Application.Features.Students.Access;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -8,7 +10,7 @@ namespace MentorDesk.Api.Bot;
 /// Обработчик одного апдейта. Пока отвечает заглушкой на любое сообщение;
 /// команды (/start, /decks и т.д.) добавляются задачами из бэклога.
 /// </summary>
-public class UpdateHandler(ILogger<UpdateHandler> logger, IEnumerable<IBotCommand> commands)
+public class UpdateHandler(ILogger<UpdateHandler> logger, IEnumerable<IBotCommand> commands, ISender sender)
 {
     public async Task HandleAsync(ITelegramBotClient bot, Update update, CancellationToken ct)
     {
@@ -16,13 +18,41 @@ public class UpdateHandler(ILogger<UpdateHandler> logger, IEnumerable<IBotComman
         {
             return;
         }
-
         logger.LogInformation("Сообщение от {ChatId}: {Text}", message.Chat.Id, text);
-
+        
         var rawCommand = text.Split(' ')[0];
         var commandName = rawCommand.Split('@')[0].ToLower();
 
-        var command = commands.FirstOrDefault(c => string.Equals(c.Command, commandName, StringComparison.OrdinalIgnoreCase));
+        var telegramUser = message.From;
+
+        if (telegramUser is null)
+        {
+        await bot.SendMessage(message.Chat.Id, "Доступа нет, напиши ментору.", cancellationToken: ct);
+        return;
+        }
+
+        var accessResult = await sender.Send(new CheckStudentAccessQuery(telegramUser.Id, telegramUser.Username ?? string.Empty),
+                cancellationToken: ct);
+        
+        if (accessResult.Status == StudentAccessStatus.Denied)
+        {
+            await bot.SendMessage( message.Chat.Id, "Доступа нет, напиши ментору.", cancellationToken: ct);
+            return;
+        }
+
+        if (accessResult.Status == StudentAccessStatus.RequiresBinding)
+        {
+            if (commandName != "/start")
+            {
+                await bot.SendMessage(message.Chat.Id,
+                    "Для начала работы отправь /start",
+                    cancellationToken: ct);
+                return;
+            }
+        }
+
+        var command = commands.FirstOrDefault(c => string.Equals(c.Command, commandName, 
+            StringComparison.OrdinalIgnoreCase));
 
         if (command != null)
         {
