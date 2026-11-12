@@ -22,6 +22,11 @@ public class DeckSelectionCallbackHandler
         if (string.IsNullOrEmpty(callbackData)
             || !callbackData.StartsWith(BotConstants.SelectDeckCallbackPrefix, StringComparison.Ordinal))
         {
+            await botClient.AnswerCallbackQuery(
+                callbackQuery.Id,
+                text: "",
+                cancellationToken: cancellationToken);
+            
             return;
         }
 
@@ -29,6 +34,11 @@ public class DeckSelectionCallbackHandler
 
         if (!Guid.TryParse(deckIdString, out var deckId))
         {
+            await botClient.AnswerCallbackQuery(
+                callbackQuery.Id,
+                text: "",
+                cancellationToken: cancellationToken);
+            
             return;
         }
 
