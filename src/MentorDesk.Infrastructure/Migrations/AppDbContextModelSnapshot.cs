@@ -118,7 +118,8 @@ namespace MentorDesk.Infrastructure.Migrations
                 {
                     b.HasOne("MentorDesk.Domain.Entities.Deck", null)
                         .WithMany()
-                        .HasForeignKey("SelectedDeckId");
+                        .HasForeignKey("SelectedDeckId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 #pragma warning restore 612, 618
         }

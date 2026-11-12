@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MentorDesk.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261106170446_AddSelectedDeckToStudent")]
+    [Migration("20261112141055_AddSelectedDeckToStudent")]
     partial class AddSelectedDeckToStudent
     {
         /// <inheritdoc />
@@ -121,7 +121,8 @@ namespace MentorDesk.Infrastructure.Migrations
                 {
                     b.HasOne("MentorDesk.Domain.Entities.Deck", null)
                         .WithMany()
-                        .HasForeignKey("SelectedDeckId");
+                        .HasForeignKey("SelectedDeckId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 #pragma warning restore 612, 618
         }

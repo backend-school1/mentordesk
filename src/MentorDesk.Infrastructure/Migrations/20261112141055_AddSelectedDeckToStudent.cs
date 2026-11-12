@@ -27,7 +27,8 @@ namespace MentorDesk.Infrastructure.Migrations
                 table: "Students",
                 column: "SelectedDeckId",
                 principalTable: "Decks",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
         }
 
         /// <inheritdoc />

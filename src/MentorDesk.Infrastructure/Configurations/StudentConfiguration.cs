@@ -35,6 +35,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
 
         builder.HasOne<Deck>()
             .WithMany()
-            .HasForeignKey(s => s.SelectedDeckId);
+            .HasForeignKey(s => s.SelectedDeckId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
