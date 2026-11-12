@@ -64,7 +64,7 @@ public class DeckSelectionCallbackHandler
 
         await botClient.AnswerCallbackQuery(
             callbackQuery.Id,
-            text: "Колода выбрана",
+            text: $"Колода выбрана: {deck.Title}",
             cancellationToken: cancellationToken);
     }
 }
