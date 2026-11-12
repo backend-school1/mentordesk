@@ -26,7 +26,7 @@ public class DeckSelectionCallbackHandler
                 callbackQuery.Id,
                 text: "",
                 cancellationToken: cancellationToken);
-            
+
             return;
         }
 
@@ -38,7 +38,7 @@ public class DeckSelectionCallbackHandler
                 callbackQuery.Id,
                 text: "",
                 cancellationToken: cancellationToken);
-            
+
             return;
         }
 

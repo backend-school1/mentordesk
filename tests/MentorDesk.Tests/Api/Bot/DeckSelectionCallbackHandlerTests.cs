@@ -28,8 +28,10 @@ public class DeckSelectionCallbackHandlerTests
         var deck = new Deck() { Id = Guid.NewGuid(), Title = "C# Basics" };
 
         _studentRepositoryMock
-            .Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync([student]);
+            .Setup(x => x.GetByTelegramIdAsync(
+                12345,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(student);
 
         _studentRepositoryMock
             .Setup(x => x.GetByIdAsync(student.Id, It.IsAny<CancellationToken>()))
