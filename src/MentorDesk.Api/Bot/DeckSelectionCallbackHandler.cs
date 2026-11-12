@@ -45,29 +45,8 @@ public class DeckSelectionCallbackHandler
         }
 
         var telegramUser = callbackQuery.From;
-        var incomingUsername = telegramUser.Username?.Trim().TrimStart('@');
 
-        var students = await _studentRepository.GetAllAsync(cancellationToken);
-
-        var studentFound = students.FirstOrDefault(s =>
-            (s.TelegramId.HasValue && s.TelegramId.Value == telegramUser.Id) ||
-            (!string.IsNullOrEmpty(incomingUsername) &&
-             string.Equals(
-                 s.TelegramUserName?.Trim().TrimStart('@'),
-                 incomingUsername,
-                 StringComparison.OrdinalIgnoreCase)));
-
-        if (studentFound == null)
-        {
-            await botClient.AnswerCallbackQuery(
-                callbackQuery.Id,
-                text: "Доступа нет, напиши ментору",
-                cancellationToken: cancellationToken);
-
-            return;
-        }
-
-        var student = await _studentRepository.GetByIdAsync(studentFound.Id, cancellationToken);
+        var student = await _studentRepository.GetByTelegramIdAsync(telegramUser.Id, cancellationToken);
 
         if (student == null)
         {
