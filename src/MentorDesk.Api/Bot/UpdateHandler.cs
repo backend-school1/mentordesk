@@ -8,14 +8,20 @@ namespace MentorDesk.Api.Bot;
 /// Обработчик одного апдейта.
 /// команды (/start, /decks и т.д.) добавляются задачами из бэклога.
 /// </summary>
-public class UpdateHandler(ILogger<UpdateHandler> logger, IEnumerable<IBotCommand> commands, DeckSelectionCallbackHandler deckSelectionCallbackHandler)
+public class UpdateHandler(ILogger<UpdateHandler> logger, IEnumerable<IBotCommand> commands, IEnumerable<ICallbackQueryHandler> callbackQueryHandlers)
 {
     public async Task HandleAsync(ITelegramBotClient bot, Update update, CancellationToken ct)
     {
         if (update.CallbackQuery is { } callbackQuery)
         {
-            await deckSelectionCallbackHandler.HandleAsync(bot, callbackQuery, ct);
-            return;
+            var callbackHandler = callbackQueryHandlers.FirstOrDefault(h => callbackQuery.Data?.StartsWith(
+                h.CallbackPrefix,
+                StringComparison.Ordinal) == true);
+
+            if (callbackHandler != null)
+            {
+                await callbackHandler.HandleAsync(bot, callbackQuery, ct);
+            }
         }
 
         if (update.Message is not { Text: { } text } message)

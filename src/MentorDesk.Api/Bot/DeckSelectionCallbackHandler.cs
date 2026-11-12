@@ -1,10 +1,11 @@
+using MentorDesk.Api.Bot.Commands;
 using MentorDesk.Application.Abstractions.Repositories;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace MentorDesk.Api.Bot;
 
-public class DeckSelectionCallbackHandler
+public class DeckSelectionCallbackHandler : ICallbackQueryHandler
 {
     private readonly IStudentRepository _studentRepository;
     private readonly IDeckRepository _deckRepository;
@@ -14,6 +15,8 @@ public class DeckSelectionCallbackHandler
         _studentRepository = studentRepository;
         _deckRepository = deckRepository;
     }
+
+    public string CallbackPrefix => BotConstants.SelectDeckCallbackPrefix;
 
     public async Task HandleAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
