@@ -17,4 +17,6 @@ public interface IStudentRepository
 
     Task<Student?> GetByIdAsync(Guid id, CancellationToken ct = default);
 
+    Task<Student?> GetByTelegramIdAsync(long telegramId, CancellationToken ct = default);
+
 }
