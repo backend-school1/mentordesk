@@ -61,7 +61,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+//pr 9
 
 // /health — процесс жив; /health/ready — ещё и БД доступна.
 app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => false });
