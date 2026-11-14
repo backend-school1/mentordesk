@@ -37,6 +37,8 @@ builder.Services.AddScoped<IBotCommand, StartCommand>();
 builder.Services.AddScoped<IBotCommand, DecksCommand>();
 builder.Services.AddScoped<UpdateHandler>();
 builder.Services.AddScoped<ICallbackQueryHandler, DeckSelectionCallbackHandler>();
+builder.Services.AddScoped<ICallbackQueryHandler, ShowAnswerCallbackHandler>();
+builder.Services.AddScoped<ICallbackQueryHandler, RateCardCallbackHandler>();
 builder.Services.AddHostedService<BotHostedService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -45,8 +47,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 app.UseRouting();
-
-
 
 if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 {
@@ -62,8 +62,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//pr 9
 
 // /health — процесс жив; /health/ready — ещё и БД доступна.
 app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => false });

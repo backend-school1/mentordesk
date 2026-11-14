@@ -2,6 +2,7 @@ using MentorDesk.Api.Bot.Commands;
 using MentorDesk.Application.Abstractions.Repositories;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MentorDesk.Api.Bot;
 
@@ -9,11 +10,13 @@ public class DeckSelectionCallbackHandler : ICallbackQueryHandler
 {
     private readonly IStudentRepository _studentRepository;
     private readonly IDeckRepository _deckRepository;
+    private readonly ICardRepository _cardRepository;
 
-    public DeckSelectionCallbackHandler(IStudentRepository studentRepository, IDeckRepository deckRepository)
+    public DeckSelectionCallbackHandler(IStudentRepository studentRepository, IDeckRepository deckRepository, ICardRepository cardRepository)
     {
         _studentRepository = studentRepository;
         _deckRepository = deckRepository;
+        _cardRepository = cardRepository;
     }
 
     public string CallbackPrefix => BotConstants.SelectDeckCallbackPrefix;
@@ -78,6 +81,29 @@ public class DeckSelectionCallbackHandler : ICallbackQueryHandler
         await botClient.AnswerCallbackQuery(
             callbackQuery.Id,
             text: $"Колода выбрана: {deck.Title}",
+            cancellationToken: cancellationToken);
+
+        var cards = await _cardRepository.GetCardsByDeckAsync(deck.Id, cancellationToken);
+
+        if (cards == null || cards.Count == 0)
+        {
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                text: "Колода пройдена",
+                cancellationToken: cancellationToken);
+            return;
+        }
+
+        var firstCard = cards[0];
+        var keyboard = new InlineKeyboardMarkup(new[]
+        {
+            InlineKeyboardButton.WithCallbackData("Показать ответ", $"{BotConstants.ShowAnswerCallbackPrefix}{deck.Id}:0")
+        });
+
+        await botClient.SendMessage(
+            chatId: callbackQuery.Message!.Chat.Id,
+            text: firstCard.Question,
+            replyMarkup: keyboard,
             cancellationToken: cancellationToken);
     }
 }
