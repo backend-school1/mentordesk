@@ -43,11 +43,16 @@ public class DeckSelectionCallbackHandlerTests
             .Setup(x => x.GetDeckAsync(deck.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(deck);
 
+        _cardRepositoryMock
+            .Setup(x => x.GetCardsByDeckIdAsync(deck.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<Card>());
+
         var callbackQuery = new CallbackQuery()
         {
             Id = "callback-123",
             From = new User() { Id = 12345, Username = "test_user" },
-            Data = $"{BotConstants.SelectDeckCallbackPrefix}{deck.Id}"
+            Data = $"{BotConstants.SelectDeckCallbackPrefix}{deck.Id}",
+            Message = new Message { Chat = new Chat { Id = 12345 } }
         };
 
         var handler = new DeckSelectionCallbackHandler(
@@ -80,7 +85,8 @@ public class DeckSelectionCallbackHandlerTests
         {
             Id = "callback-123",
             From = new User() { Id = 12345, Username = "test_user" },
-            Data = $"{BotConstants.SelectDeckCallbackPrefix}{deck.Id}"
+            Data = $"{BotConstants.SelectDeckCallbackPrefix}{deck.Id}",
+            Message = new Message { Chat = new Chat { Id = 12345 } }
         };
 
         var handler = new DeckSelectionCallbackHandler(
