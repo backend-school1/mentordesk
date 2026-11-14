@@ -21,4 +21,6 @@ public class Student
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    public Guid? SelectedDeckId { get; set; }
+
 }
