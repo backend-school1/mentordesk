@@ -13,12 +13,14 @@ public class DeckSelectionCallbackHandlerTests
     private readonly Mock<IDeckRepository> _deckRepositoryMock;
     private readonly Mock<IStudentRepository> _studentRepositoryMock;
     private readonly Mock<ITelegramBotClient> _telegramBotClientMock;
+    private readonly Mock<ICardRepository> _cardRepositoryMock;
 
     public DeckSelectionCallbackHandlerTests()
     {
         _deckRepositoryMock = new Mock<IDeckRepository>();
         _studentRepositoryMock = new Mock<IStudentRepository>();
         _telegramBotClientMock = new Mock<ITelegramBotClient>();
+        _cardRepositoryMock = new Mock<ICardRepository>();
     }
 
     [Fact]
@@ -50,7 +52,8 @@ public class DeckSelectionCallbackHandlerTests
 
         var handler = new DeckSelectionCallbackHandler(
             _studentRepositoryMock.Object,
-            _deckRepositoryMock.Object);
+            _deckRepositoryMock.Object,
+            _cardRepositoryMock.Object);
 
         await handler.HandleAsync(
             _telegramBotClientMock.Object,
@@ -82,7 +85,8 @@ public class DeckSelectionCallbackHandlerTests
 
         var handler = new DeckSelectionCallbackHandler(
             _studentRepositoryMock.Object,
-            _deckRepositoryMock.Object);
+            _deckRepositoryMock.Object,
+            _cardRepositoryMock.Object);
 
         await handler.HandleAsync(
             _telegramBotClientMock.Object,
