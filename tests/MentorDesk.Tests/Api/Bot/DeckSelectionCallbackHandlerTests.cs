@@ -44,7 +44,7 @@ public class DeckSelectionCallbackHandlerTests
             .ReturnsAsync(deck);
 
         _cardRepositoryMock
-            .Setup(x => x.GetCardsByDeckIdAsync(deck.Id, It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetCardsByDeckAsync(deck.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Card>());
 
         var callbackQuery = new CallbackQuery()
