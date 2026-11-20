@@ -72,7 +72,7 @@ public class DeckSelectionCallbackHandler : ICallbackQueryHandler
         }
 
         student.SelectedDeckId = deck.Id;
-        await _studentRepository.AddAsync(student, cancellationToken);
+        await _studentRepository.SaveChangesAsync(cancellationToken);
 
         await botClient.AnswerCallbackQuery(
             callbackQuery.Id,
@@ -93,15 +93,11 @@ public class DeckSelectionCallbackHandler : ICallbackQueryHandler
         var sortedCards = cards.OrderBy(c => c.CreatedAt).ThenBy(c => c.Id).ToList();
         var firstCard = sortedCards[0];
 
-        var prefix = BotConstants.ShowAnswerCallbackPrefix.EndsWith(':')
-            ? BotConstants.ShowAnswerCallbackPrefix
-            : $"{BotConstants.ShowAnswerCallbackPrefix}:";
-
         var keyboard = new InlineKeyboardMarkup(new[]
         {
             InlineKeyboardButton.WithCallbackData(
                 "Показать ответ",
-                $"{prefix}{firstCard.Id}")
+                $"{BotConstants.ShowAnswerCallbackPrefix}{firstCard.Id}")
         });
 
         await botClient.SendMessage(

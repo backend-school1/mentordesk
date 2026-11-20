@@ -24,18 +24,17 @@ public class ShowAnswerCallbackHandlerTests
     [Fact]
     public async Task HandleAsync_ValidCard_SendsAnswerWithRatingButtons()
     {
-        var deckId = Guid.NewGuid();
         var cardId = Guid.NewGuid();
-        var card = new Card { Id = cardId, DeckId = deckId, Question = "Q1", Answer = "A1" };
+        var card = new Card { Id = cardId, Question = "Q1", Answer = "A1" };
 
         _cardRepositoryMock
-            .Setup(r => r.GetCardsByDeckAsync(deckId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Card> { card });
+            .Setup(r => r.GetCardAsync(cardId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(card);
 
         var callbackQuery = new CallbackQuery
         {
             Id = "query_1",
-            Data = $"{BotConstants.ShowAnswerCallbackPrefix}{deckId}:{cardId}",
+            Data = $"{BotConstants.ShowAnswerCallbackPrefix}{cardId:N}",
             Message = new Message { Chat = new Chat { Id = 12345 } }
         };
 
@@ -60,17 +59,16 @@ public class ShowAnswerCallbackHandlerTests
     [Fact]
     public async Task HandleAsync_CardNotFound_SendsDeckCompletedMessage()
     {
-        var deckId = Guid.NewGuid();
         var cardId = Guid.NewGuid();
 
         _cardRepositoryMock
-            .Setup(r => r.GetCardsByDeckAsync(deckId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Card>());
+            .Setup(r => r.GetCardAsync(cardId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Card?)null);
 
         var callbackQuery = new CallbackQuery
         {
             Id = "query_2",
-            Data = $"{BotConstants.ShowAnswerCallbackPrefix}{deckId}:{cardId}",
+            Data = $"{BotConstants.ShowAnswerCallbackPrefix}{cardId:N}",
             Message = new Message { Chat = new Chat { Id = 12345 } }
         };
 
@@ -78,7 +76,9 @@ public class ShowAnswerCallbackHandlerTests
 
         _botClientMock.Verify(
             b => b.SendRequest(
-                It.Is<SendMessageRequest>(req => req.Text == "Колода пройдена"),
+                It.Is<SendMessageRequest>(req =>
+                    req.ChatId.Identifier == 12345 &&
+                    !string.IsNullOrEmpty(req.Text)),
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }

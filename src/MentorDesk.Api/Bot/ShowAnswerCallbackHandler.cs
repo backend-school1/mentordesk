@@ -40,7 +40,7 @@ public class ShowAnswerCallbackHandler : ICallbackQueryHandler
         {
             await botClient.SendMessage(
                 chatId: callbackQuery.Message!.Chat.Id,
-                text: "Карточка не найдена",
+                text: "Карточка пройдена",
                 cancellationToken: cancellationToken);
             return;
         }

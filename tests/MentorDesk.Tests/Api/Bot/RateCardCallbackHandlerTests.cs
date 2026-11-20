@@ -24,8 +24,24 @@ public class RateCardCallbackHandlerTests
     public async Task HandleAsync_NextCardExists_SendsNextQuestion()
     {
         var deckId = Guid.NewGuid();
-        var card1 = new Card { Id = Guid.Parse("00000000-0000-0000-0000-000000000001"), DeckId = deckId, Question = "Q1", Answer = "A1" };
-        var card2 = new Card { Id = Guid.Parse("00000000-0000-0000-0000-000000000002"), DeckId = deckId, Question = "Q2", Answer = "A2" };
+        var card1 = new Card
+        {
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            DeckId = deckId,
+            Question = "Q1",
+            CreatedAt = DateTime.UtcNow.AddMinutes(-5)
+        };
+        var card2 = new Card
+        {
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+            DeckId = deckId,
+            Question = "Q2",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _cardRepositoryMock
+            .Setup(r => r.GetCardAsync(card1.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(card1);
 
         _cardRepositoryMock
             .Setup(r => r.GetCardsByDeckAsync(deckId, It.IsAny<CancellationToken>()))
@@ -34,7 +50,7 @@ public class RateCardCallbackHandlerTests
         var callbackQuery = new CallbackQuery
         {
             Id = "query_3",
-            Data = $"{BotConstants.RateCardCallbackPrefix}{deckId}:{card1.Id}:5",
+            Data = $"{BotConstants.RateCardCallbackPrefix}{card1.Id:N}:5",
             Message = new Message { Chat = new Chat { Id = 12345 } }
         };
 
@@ -59,7 +75,17 @@ public class RateCardCallbackHandlerTests
     public async Task HandleAsync_LastCardRated_SendsDeckCompletedMessage()
     {
         var deckId = Guid.NewGuid();
-        var card1 = new Card { Id = Guid.NewGuid(), DeckId = deckId, Question = "Q1", Answer = "A1" };
+        var card1 = new Card
+        {
+            Id = Guid.NewGuid(),
+            DeckId = deckId,
+            Question = "Q1",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _cardRepositoryMock
+            .Setup(r => r.GetCardAsync(card1.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(card1);
 
         _cardRepositoryMock
             .Setup(r => r.GetCardsByDeckAsync(deckId, It.IsAny<CancellationToken>()))
@@ -68,7 +94,7 @@ public class RateCardCallbackHandlerTests
         var callbackQuery = new CallbackQuery
         {
             Id = "query_4",
-            Data = $"{BotConstants.RateCardCallbackPrefix}{deckId}:{card1.Id}:4",
+            Data = $"{BotConstants.RateCardCallbackPrefix}{card1.Id:N}:4",
             Message = new Message { Chat = new Chat { Id = 12345 } }
         };
 
