@@ -19,18 +19,21 @@ public class RateCardCallbackHandler : ICallbackQueryHandler
 
     public async Task HandleAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
+        await botClient.AnswerCallbackQuery(callbackQuery.Id, cancellationToken: cancellationToken);
+
         var data = callbackQuery.Data![BotConstants.RateCardCallbackPrefix.Length..];
         var parts = data.Split(':');
 
-        if (parts.Length < 3 || !Guid.TryParse(parts[0], out var deckId) || !int.TryParse(parts[1], out var cardIndex))
+        if (parts.Length < 3 ||
+            !Guid.TryParse(parts[0], out var deckId) ||
+            !Guid.TryParse(parts[1], out var cardId) ||
+            !int.TryParse(parts[2], out var score))
         {
             return;
         }
 
-        var nextIndex = cardIndex + 1;
         var cards = await _cardRepository.GetCardsByDeckAsync(deckId, cancellationToken);
-
-        if (cards == null || nextIndex >= cards.Count)
+        if (cards == null || cards.Count == 0)
         {
             await botClient.SendMessage(
                 chatId: callbackQuery.Message!.Chat.Id,
@@ -39,10 +42,25 @@ public class RateCardCallbackHandler : ICallbackQueryHandler
             return;
         }
 
-        var nextCard = cards[nextIndex];
+        var orderedCards = cards.OrderBy(c => c.Id).ToList();
+        var currentIndex = orderedCards.FindIndex(c => c.Id == cardId);
+        var nextIndex = currentIndex + 1;
+
+        if (currentIndex == -1 || nextIndex >= orderedCards.Count)
+        {
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                text: "Колода пройдена",
+                cancellationToken: cancellationToken);
+            return;
+        }
+
+        var nextCard = orderedCards[nextIndex];
         var keyboard = new InlineKeyboardMarkup(new[]
         {
-            InlineKeyboardButton.WithCallbackData("Показать ответ", $"{BotConstants.ShowAnswerCallbackPrefix}{deckId}:{nextIndex}")
+            InlineKeyboardButton.WithCallbackData(
+                "Показать ответ",
+                $"{BotConstants.ShowAnswerCallbackPrefix}{deckId}:{nextCard.Id}")
         });
 
         await botClient.SendMessage(

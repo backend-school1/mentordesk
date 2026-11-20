@@ -94,10 +94,14 @@ public class DeckSelectionCallbackHandler : ICallbackQueryHandler
             return;
         }
 
-        var firstCard = cards[0];
+        var sortedCards = cards.OrderBy(c => c.CreatedAt).ToList();
+        var firstCard = sortedCards[0];
+
         var keyboard = new InlineKeyboardMarkup(new[]
         {
-            InlineKeyboardButton.WithCallbackData("Показать ответ", $"{BotConstants.ShowAnswerCallbackPrefix}{deck.Id}:0")
+            InlineKeyboardButton.WithCallbackData(
+                "Показать ответ",
+                $"{BotConstants.ShowAnswerCallbackPrefix}{deck.Id}:{firstCard.Id}")
         });
 
         await botClient.SendMessage(

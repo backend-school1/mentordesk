@@ -19,16 +19,20 @@ public class ShowAnswerCallbackHandler : ICallbackQueryHandler
 
     public async Task HandleAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
+        await botClient.AnswerCallbackQuery(callbackQuery.Id, cancellationToken: cancellationToken);
+
         var data = callbackQuery.Data![BotConstants.ShowAnswerCallbackPrefix.Length..];
         var parts = data.Split(':');
 
-        if (parts.Length < 2 || !Guid.TryParse(parts[0], out var deckId) || !int.TryParse(parts[1], out var cardIndex))
+        if (parts.Length < 2 || !Guid.TryParse(parts[0], out var deckId) || !Guid.TryParse(parts[1], out var cardId))
         {
             return;
         }
 
         var cards = await _cardRepository.GetCardsByDeckAsync(deckId, cancellationToken);
-        if (cards == null || cardIndex >= cards.Count)
+        var currentCard = cards?.FirstOrDefault(c => c.Id == cardId);
+
+        if (currentCard == null)
         {
             await botClient.SendMessage(
                 chatId: callbackQuery.Message!.Chat.Id,
@@ -37,12 +41,10 @@ public class ShowAnswerCallbackHandler : ICallbackQueryHandler
             return;
         }
 
-        var currentCard = cards[cardIndex];
-
         var ratingButtons = Enumerable.Range(1, 5).Select(score =>
             InlineKeyboardButton.WithCallbackData(
                 score.ToString(),
-                $"{BotConstants.RateCardCallbackPrefix}{deckId}:{cardIndex}:{score}"
+                $"{BotConstants.RateCardCallbackPrefix}{deckId}:{cardId}:{score}"
             )
         ).ToArray();
 
