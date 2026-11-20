@@ -21,18 +21,33 @@ public class RateCardCallbackHandler : ICallbackQueryHandler
     {
         await botClient.AnswerCallbackQuery(callbackQuery.Id, cancellationToken: cancellationToken);
 
-        var data = callbackQuery.Data![BotConstants.RateCardCallbackPrefix.Length..];
-        var parts = data.Split(':');
-
-        if (parts.Length < 3 ||
-            !Guid.TryParse(parts[0], out var deckId) ||
-            !Guid.TryParse(parts[1], out var cardId) ||
-            !int.TryParse(parts[2], out var score))
+        if (string.IsNullOrEmpty(callbackQuery.Data) ||
+            !callbackQuery.Data.StartsWith(BotConstants.RateCardCallbackPrefix, StringComparison.Ordinal))
         {
             return;
         }
 
-        var cards = await _cardRepository.GetCardsByDeckAsync(deckId, cancellationToken);
+        var data = callbackQuery.Data[BotConstants.RateCardCallbackPrefix.Length..];
+        var parts = data.Split(':');
+
+        if (parts.Length < 2 ||
+            !Guid.TryParse(parts[0], out var cardId) ||
+            !int.TryParse(parts[1], out var score))
+        {
+            return;
+        }
+
+        var currentCard = await _cardRepository.GetCardAsync(cardId, cancellationToken);
+        if (currentCard == null)
+        {
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                text: "Карточка не найдена",
+                cancellationToken: cancellationToken);
+            return;
+        }
+
+        var cards = await _cardRepository.GetCardsByDeckAsync(currentCard.DeckId, cancellationToken);
         if (cards == null || cards.Count == 0)
         {
             await botClient.SendMessage(
@@ -42,7 +57,7 @@ public class RateCardCallbackHandler : ICallbackQueryHandler
             return;
         }
 
-        var orderedCards = cards.OrderBy(c => c.Id).ToList();
+        var orderedCards = cards.OrderBy(c => c.CreatedAt).ThenBy(c => c.Id).ToList();
         var currentIndex = orderedCards.FindIndex(c => c.Id == cardId);
         var nextIndex = currentIndex + 1;
 
@@ -56,12 +71,13 @@ public class RateCardCallbackHandler : ICallbackQueryHandler
         }
 
         var nextCard = orderedCards[nextIndex];
+
         var keyboard = new InlineKeyboardMarkup(new[]
         {
-            InlineKeyboardButton.WithCallbackData(
-                "Показать ответ",
-                $"{BotConstants.ShowAnswerCallbackPrefix}{deckId}:{nextCard.Id}")
-        });
+        InlineKeyboardButton.WithCallbackData(
+            "Показать ответ",
+            $"{BotConstants.ShowAnswerCallbackPrefix}{nextCard.Id}")
+    });
 
         await botClient.SendMessage(
             chatId: callbackQuery.Message!.Chat.Id,

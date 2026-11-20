@@ -21,22 +21,26 @@ public class ShowAnswerCallbackHandler : ICallbackQueryHandler
     {
         await botClient.AnswerCallbackQuery(callbackQuery.Id, cancellationToken: cancellationToken);
 
-        var data = callbackQuery.Data![BotConstants.ShowAnswerCallbackPrefix.Length..];
-        var parts = data.Split(':');
-
-        if (parts.Length < 2 || !Guid.TryParse(parts[0], out var deckId) || !Guid.TryParse(parts[1], out var cardId))
+        if (string.IsNullOrEmpty(callbackQuery.Data) ||
+            !callbackQuery.Data.StartsWith(BotConstants.ShowAnswerCallbackPrefix, StringComparison.Ordinal))
         {
             return;
         }
 
-        var cards = await _cardRepository.GetCardsByDeckAsync(deckId, cancellationToken);
-        var currentCard = cards?.FirstOrDefault(c => c.Id == cardId);
+        var cardIdString = callbackQuery.Data[BotConstants.ShowAnswerCallbackPrefix.Length..];
+
+        if (!Guid.TryParse(cardIdString, out var cardId))
+        {
+            return;
+        }
+
+        var currentCard = await _cardRepository.GetCardAsync(cardId, cancellationToken);
 
         if (currentCard == null)
         {
             await botClient.SendMessage(
                 chatId: callbackQuery.Message!.Chat.Id,
-                text: "Колода пройдена",
+                text: "Карточка не найдена",
                 cancellationToken: cancellationToken);
             return;
         }
@@ -44,7 +48,7 @@ public class ShowAnswerCallbackHandler : ICallbackQueryHandler
         var ratingButtons = Enumerable.Range(1, 5).Select(score =>
             InlineKeyboardButton.WithCallbackData(
                 score.ToString(),
-                $"{BotConstants.RateCardCallbackPrefix}{deckId}:{cardId}:{score}"
+                $"{BotConstants.RateCardCallbackPrefix}{cardId:N}:{score}"
             )
         ).ToArray();
 

@@ -12,7 +12,10 @@ public class DeckSelectionCallbackHandler : ICallbackQueryHandler
     private readonly IDeckRepository _deckRepository;
     private readonly ICardRepository _cardRepository;
 
-    public DeckSelectionCallbackHandler(IStudentRepository studentRepository, IDeckRepository deckRepository, ICardRepository cardRepository)
+    public DeckSelectionCallbackHandler(
+        IStudentRepository studentRepository,
+        IDeckRepository deckRepository,
+        ICardRepository cardRepository)
     {
         _studentRepository = studentRepository;
         _deckRepository = deckRepository;
@@ -32,7 +35,6 @@ public class DeckSelectionCallbackHandler : ICallbackQueryHandler
                 callbackQuery.Id,
                 text: "",
                 cancellationToken: cancellationToken);
-
             return;
         }
 
@@ -44,39 +46,33 @@ public class DeckSelectionCallbackHandler : ICallbackQueryHandler
                 callbackQuery.Id,
                 text: "",
                 cancellationToken: cancellationToken);
-
             return;
         }
 
         var deck = await _deckRepository.GetDeckAsync(deckId, cancellationToken);
-
         if (deck == null)
         {
             await botClient.AnswerCallbackQuery(
                 callbackQuery.Id,
                 text: "Колода не найдена",
                 cancellationToken: cancellationToken);
-
             return;
         }
 
         var telegramUser = callbackQuery.From;
-
         var student = await _studentRepository.GetByTelegramIdAsync(telegramUser.Id, cancellationToken);
 
         if (student == null)
         {
             await botClient.AnswerCallbackQuery(
                 callbackQuery.Id,
-                text: "Доступа нет, напиши ментору",
+                text: "Пользователь не найден",
                 cancellationToken: cancellationToken);
-
             return;
         }
 
         student.SelectedDeckId = deck.Id;
-
-        await _studentRepository.SaveChangesAsync(cancellationToken);
+        await _studentRepository.AddAsync(student, cancellationToken);
 
         await botClient.AnswerCallbackQuery(
             callbackQuery.Id,
@@ -94,14 +90,18 @@ public class DeckSelectionCallbackHandler : ICallbackQueryHandler
             return;
         }
 
-        var sortedCards = cards.OrderBy(c => c.CreatedAt).ToList();
+        var sortedCards = cards.OrderBy(c => c.CreatedAt).ThenBy(c => c.Id).ToList();
         var firstCard = sortedCards[0];
+
+        var prefix = BotConstants.ShowAnswerCallbackPrefix.EndsWith(':')
+            ? BotConstants.ShowAnswerCallbackPrefix
+            : $"{BotConstants.ShowAnswerCallbackPrefix}:";
 
         var keyboard = new InlineKeyboardMarkup(new[]
         {
             InlineKeyboardButton.WithCallbackData(
                 "Показать ответ",
-                $"{BotConstants.ShowAnswerCallbackPrefix}{deck.Id}:{firstCard.Id}")
+                $"{prefix}{firstCard.Id}")
         });
 
         await botClient.SendMessage(
