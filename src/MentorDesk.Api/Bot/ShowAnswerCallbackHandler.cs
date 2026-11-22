@@ -27,6 +27,15 @@ public class ShowAnswerCallbackHandler : ICallbackQueryHandler
             return;
         }
 
+        if (callbackQuery.Message != null)
+        {
+            await botClient.EditMessageReplyMarkup(
+                chatId: callbackQuery.Message.Chat.Id,
+                messageId: callbackQuery.Message.MessageId,
+                replyMarkup: null,
+                cancellationToken: cancellationToken);
+        }
+
         var cardIdString = callbackQuery.Data[BotConstants.ShowAnswerCallbackPrefix.Length..];
 
         if (!Guid.TryParse(cardIdString, out var cardId))

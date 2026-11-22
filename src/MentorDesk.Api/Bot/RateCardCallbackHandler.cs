@@ -27,6 +27,15 @@ public class RateCardCallbackHandler : ICallbackQueryHandler
             return;
         }
 
+        if (callbackQuery.Message != null)
+        {
+            await botClient.EditMessageReplyMarkup(
+                chatId: callbackQuery.Message.Chat.Id,
+                messageId: callbackQuery.Message.MessageId,
+                replyMarkup: null,
+                cancellationToken: cancellationToken);
+        }
+
         var data = callbackQuery.Data[BotConstants.RateCardCallbackPrefix.Length..];
         var parts = data.Split(':');
 
@@ -76,7 +85,7 @@ public class RateCardCallbackHandler : ICallbackQueryHandler
         {
         InlineKeyboardButton.WithCallbackData(
             "Показать ответ",
-            $"{BotConstants.ShowAnswerCallbackPrefix}{nextCard.Id}")
+            $"{BotConstants.ShowAnswerCallbackPrefix}{nextCard.Id:N}")
     });
 
         await botClient.SendMessage(
