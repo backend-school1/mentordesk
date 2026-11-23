@@ -13,12 +13,14 @@ public class DeckSelectionCallbackHandlerTests
     private readonly Mock<IDeckRepository> _deckRepositoryMock;
     private readonly Mock<IStudentRepository> _studentRepositoryMock;
     private readonly Mock<ITelegramBotClient> _telegramBotClientMock;
+    private readonly Mock<ICardRepository> _cardRepositoryMock;
 
     public DeckSelectionCallbackHandlerTests()
     {
         _deckRepositoryMock = new Mock<IDeckRepository>();
         _studentRepositoryMock = new Mock<IStudentRepository>();
         _telegramBotClientMock = new Mock<ITelegramBotClient>();
+        _cardRepositoryMock = new Mock<ICardRepository>();
     }
 
     [Fact]
@@ -41,16 +43,22 @@ public class DeckSelectionCallbackHandlerTests
             .Setup(x => x.GetDeckAsync(deck.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(deck);
 
+        _cardRepositoryMock
+            .Setup(x => x.GetCardsByDeckAsync(deck.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<Card>());
+
         var callbackQuery = new CallbackQuery()
         {
             Id = "callback-123",
             From = new User() { Id = 12345, Username = "test_user" },
-            Data = $"{BotConstants.SelectDeckCallbackPrefix}{deck.Id}"
+            Data = $"{BotConstants.SelectDeckCallbackPrefix}{deck.Id}",
+            Message = new Message { Chat = new Chat { Id = 12345 } }
         };
 
         var handler = new DeckSelectionCallbackHandler(
             _studentRepositoryMock.Object,
-            _deckRepositoryMock.Object);
+            _deckRepositoryMock.Object,
+            _cardRepositoryMock.Object);
 
         await handler.HandleAsync(
             _telegramBotClientMock.Object,
@@ -77,12 +85,14 @@ public class DeckSelectionCallbackHandlerTests
         {
             Id = "callback-123",
             From = new User() { Id = 12345, Username = "test_user" },
-            Data = $"{BotConstants.SelectDeckCallbackPrefix}{deck.Id}"
+            Data = $"{BotConstants.SelectDeckCallbackPrefix}{deck.Id}",
+            Message = new Message { Chat = new Chat { Id = 12345 } }
         };
 
         var handler = new DeckSelectionCallbackHandler(
             _studentRepositoryMock.Object,
-            _deckRepositoryMock.Object);
+            _deckRepositoryMock.Object,
+            _cardRepositoryMock.Object);
 
         await handler.HandleAsync(
             _telegramBotClientMock.Object,
